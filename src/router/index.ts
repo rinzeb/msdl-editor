@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
-import GlobeView from "../views/GlobeView.vue";
+import ScenarioEditor from "@/views/ScenarioEditor.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -7,7 +7,7 @@ const router = createRouter({
     {
       path: "/",
       name: "home",
-      component: GlobeView,
+      component: ScenarioEditor,
     },
   ],
 });

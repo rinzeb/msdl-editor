@@ -37,7 +37,7 @@ const typeLabel = computed(() => {
 </script>
 
 <template>
-  <Card class="text-sm bg-card/90 relative min-w-[200px]">
+  <Card class="text-sm bg-card/90 backdrop-blur-lg relative min-w-[200px]">
     <header class="p-4 mt-4 h-20 flex justify-between">
       <div class="flex gap-2">
         <MilSymbol :sidc="item.sidc" :key="item.sidc" :size="16" />

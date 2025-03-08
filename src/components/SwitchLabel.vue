@@ -8,7 +8,7 @@ const id = nanoid();
 </script>
 <template>
   <div class="flex items-center gap-2">
-    <Switch :id="id" v-model:checked="checked" />
+    <Switch :id="id" v-model="checked" />
     <Label :for="id"><slot /></Label>
   </div>
 </template>

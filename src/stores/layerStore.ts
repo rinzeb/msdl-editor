@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
+import type { MilitaryScenario } from "@orbat-mapper/msdllib";
 
 export const useLayerStore = defineStore("visibleLayers", () => {
   const layers = ref<Set<string>>(new Set());
@@ -8,7 +9,14 @@ export const useLayerStore = defineStore("visibleLayers", () => {
   const showEquipment = ref(true);
   const showLabels = ref(false);
 
-  return { layers, showIconAnchors, showUnits, showEquipment, showLabels };
+  function setSideLayers(scenario: MilitaryScenario) {
+    layers.value.clear();
+    scenario.sides.forEach((layer) => {
+      layers.value.add(layer.objectHandle);
+    });
+  }
+
+  return { layers, showIconAnchors, showUnits, showEquipment, showLabels, setSideLayers };
 });
 
 export const useMapSettingsStore = defineStore("mapSettings", () => {
