@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, useTemplateRef } from "vue";
 import { useDropZone } from "@vueuse/core";
 import { MilitaryScenario } from "@orbat-mapper/msdllib";
 
 const emit = defineEmits<{ loaded: [scenario: MilitaryScenario] }>();
 
-const dropZoneRef = ref<HTMLDivElement>();
+const dropZoneRef = useTemplateRef("dropZoneRef");
 
 const { isOverDropZone } = useDropZone(dropZoneRef, onDrop);
 const isError = ref(false);

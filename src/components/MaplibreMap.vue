@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from "vue";
-import { GlobeControl, Map as MlMap, NavigationControl } from "maplibre-gl";
+import { onMounted, onUnmounted, ref, useTemplateRef } from "vue";
+import { GlobeControl, Map as MlMap, NavigationControl, ScaleControl } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 
 const emit = defineEmits(["ready"]);
 
-const mapContainerElement = ref();
+const mapContainerElement = useTemplateRef("mapContainerElement");
 let mlMap: MlMap;
 
 onMounted(async () => {
   mlMap = new MlMap({
-    container: mapContainerElement.value,
+    container: mapContainerElement.value as HTMLElement,
     // style: "https://demotiles.maplibre.org/style.json", // style URL
     style: "https://tiles.openfreemap.org/styles/positron", // style URL
     // style: {
