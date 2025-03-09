@@ -10,8 +10,8 @@ import { useLayerStore } from "@/stores/layerStore.ts";
 import maplibregl from "maplibre-gl";
 import MapLogic from "@/components/MapLogic.vue";
 import LoadScenarioDialog from "@/components/LoadScenarioDialog.vue";
-import LeftPanel from "@/views/LeftPanel.vue";
-import RightPanel from "@/views/RightPanel.vue";
+import LeftPanel from "@/components/LeftPanel.vue";
+import RightPanel from "@/components/RightPanel.vue";
 
 const mlMap = shallowRef<maplibregl.Map>();
 const msdl = shallowRef<MilitaryScenario>();
