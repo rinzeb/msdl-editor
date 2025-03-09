@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { ref, useTemplateRef } from "vue";
-import { useDropZone } from "@vueuse/core";
 import { MilitaryScenario } from "@orbat-mapper/msdllib";
+import { useFileDropZone } from "@/composables/filedragdrop.ts";
 
 const emit = defineEmits<{ loaded: [scenario: MilitaryScenario] }>();
 
 const dropZoneRef = useTemplateRef("dropZoneRef");
 
-const { isOverDropZone } = useDropZone(dropZoneRef, onDrop);
+const { isOverDropZone } = useFileDropZone(dropZoneRef, onDrop);
 const isError = ref(false);
 
 function readFile(file: File) {
