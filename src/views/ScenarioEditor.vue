@@ -50,7 +50,7 @@ async function getData() {
   }
 }
 
-// getData();
+getData();
 
 const { isOverDropZone } = useFileDropZone(dropZoneRef, onDrop);
 
