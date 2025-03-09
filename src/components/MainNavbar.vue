@@ -5,23 +5,30 @@ import { Button } from "@/components/ui/button";
 import { useDark, useToggle } from "@vueuse/core";
 import { injectStrict } from "@/utils.ts";
 import { activeScenarioKey } from "@/components/injects.ts";
+import { MilitaryScenario } from "@orbat-mapper/msdllib";
+import { loadMSDLFromFile } from "@/lib/io.ts";
 
+const emit = defineEmits<{ loaded: [scenario: MilitaryScenario] }>();
 const msdl = injectStrict(activeScenarioKey);
 
 const isDark = useDark();
 const toggleDark = useToggle(isDark);
-import { useDialogStore } from "@/stores/dialogStore.ts";
 
-const dialogStore = useDialogStore();
+async function doLoading() {
+  try {
+    const scn = await loadMSDLFromFile();
+    emit("loaded", scn);
+  } catch (e) {
+    console.error(e);
+  }
+}
 </script>
 <template>
   <nav class="flex items-center justify-between p-1 border-b">
     <div class="pl-2 flex items-center gap-2">
-      <MainDropdownMenu />
+      <MainDropdownMenu @loaded="emit('loaded', $event)" />
       <div v-if="msdl">{{ msdl.scenarioId.name || "No title" }}</div>
-      <Button v-else variant="outline" @click="dialogStore.toggleLoadDialog()"
-        >Load scenario</Button
-      >
+      <Button v-else variant="outline" @click="doLoading">Load scenario</Button>
     </div>
 
     <div>

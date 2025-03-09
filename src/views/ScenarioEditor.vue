@@ -9,7 +9,6 @@ import { activeScenarioKey } from "@/components/injects.ts";
 import { useLayerStore } from "@/stores/layerStore.ts";
 import maplibregl from "maplibre-gl";
 import MapLogic from "@/components/MapLogic.vue";
-import LoadScenarioDialog from "@/components/LoadScenarioDialog.vue";
 import LeftPanel from "@/components/LeftPanel.vue";
 import RightPanel from "@/components/RightPanel.vue";
 
@@ -47,12 +46,12 @@ async function getData() {
   }
 }
 
-getData();
+// getData();
 </script>
 <template>
   <div class="h-full w-full flex flex-col relative">
     <header class="flex-shrink-0">
-      <MainNavbar />
+      <MainNavbar @loaded="loadScenario" />
     </header>
     <main class="flex-auto relative">
       <MaplibreMap @ready="onMapReady" />
@@ -63,6 +62,5 @@ getData();
       </div>
     </main>
     <LoadFromUrlDialog v-model:open="dialogStore.isUrlDialogOpen" @loaded="loadScenario" />
-    <LoadScenarioDialog v-model:open="dialogStore.isLoadDialogOpen" @loaded="loadScenario" />
   </div>
 </template>

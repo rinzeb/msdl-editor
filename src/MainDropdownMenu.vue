@@ -4,10 +4,7 @@ import {
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuSub,
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
@@ -19,11 +16,25 @@ import { useDialogStore } from "@/stores/dialogStore.ts";
 import { useLayerStore, useMapSettingsStore } from "@/stores/layerStore.ts";
 import { injectStrict } from "@/utils.ts";
 import { activeScenarioKey } from "@/components/injects.ts";
+import { MilitaryScenario } from "@orbat-mapper/msdllib";
+import { loadMSDLFromFile } from "@/lib/io.ts";
+
+const emit = defineEmits<{ loaded: [scenario: MilitaryScenario] }>();
+
 const store = useLayerStore();
 const mapSettings = useMapSettingsStore();
 const msdl = injectStrict(activeScenarioKey);
 
 const dialogStore = useDialogStore();
+
+async function doLoading() {
+  try {
+    const scn = await loadMSDLFromFile();
+    emit("loaded", scn);
+  } catch (e) {
+    console.error(e);
+  }
+}
 </script>
 <template>
   <DropdownMenu>
@@ -41,9 +52,7 @@ const dialogStore = useDialogStore();
         <DropdownMenuSubContent>
           <DropdownMenuItem disabled>Download MSDL</DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem @select="dialogStore.toggleLoadDialog()"
-            >Load MSDL from file ...</DropdownMenuItem
-          >
+          <DropdownMenuItem @click="doLoading">Load MSDL from file ...</DropdownMenuItem>
           <DropdownMenuItem @select="dialogStore.toggleUrlDialog()"
             >Load MSDL from URL ...</DropdownMenuItem
           >
@@ -69,8 +78,6 @@ const dialogStore = useDialogStore();
           >
         </DropdownMenuSubContent>
       </DropdownMenuSub>
-
-      <!--      <DropdownMenuSeparator />-->
     </DropdownMenuContent>
   </DropdownMenu>
 </template>

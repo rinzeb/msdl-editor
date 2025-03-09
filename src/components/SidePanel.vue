@@ -45,7 +45,7 @@ const toggleSide = (id: string) => {
 </script>
 
 <template>
-  <Accordion type="multiple" class="">
+  <Accordion type="multiple" class="mt-4">
     <AccordionItem v-for="side in sides" :key="side.objectHandle" :value="side.objectHandle">
       <AccordionTrigger
         ><div class="flex items-center gap-2">
