@@ -4,13 +4,13 @@ import { centroid } from "@turf/centroid";
 import { type ForceSide } from "@orbat-mapper/msdllib";
 import ms from "milsymbol";
 import { computed, watch, watchEffect } from "vue";
-import { injectStrict, sortBy } from "@/utils.ts";
+import { sortBy } from "@/utils.ts";
 import { useLayerStore, useMapSettingsStore } from "@/stores/layerStore.ts";
-import { activeScenarioKey } from "@/components/injects.ts";
 import { useSelectStore } from "@/stores/selectStore.ts";
+import { useScenarioStore } from "@/stores/scanarioStore.ts";
 
 const props = defineProps<{ mlMap: MlMap }>();
-const msdl = injectStrict(activeScenarioKey);
+const { msdl } = useScenarioStore();
 
 const store = useLayerStore();
 const mapSettings = useMapSettingsStore();

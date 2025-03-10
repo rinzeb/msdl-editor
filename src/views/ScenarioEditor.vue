@@ -3,54 +3,42 @@ import MaplibreMap from "@/components/MaplibreMap.vue";
 import MainNavbar from "@/components/MainNavbar.vue";
 import LoadFromUrlDialog from "@/components/LoadFromUrlDialog.vue";
 import { useDialogStore } from "@/stores/dialogStore.ts";
-import { provide, shallowRef, useTemplateRef } from "vue";
+import { shallowRef, useTemplateRef } from "vue";
 import { MilitaryScenario } from "@orbat-mapper/msdllib";
-import { activeScenarioKey } from "@/components/injects.ts";
-import { useLayerStore } from "@/stores/layerStore.ts";
 import maplibregl from "maplibre-gl";
 import MapLogic from "@/components/MapLogic.vue";
 import LeftPanel from "@/components/LeftPanel.vue";
 import RightPanel from "@/components/RightPanel.vue";
 import { useFileDropZone } from "@/composables/filedragdrop.ts";
 import DropZoneIndicator from "@/components/DropZoneIndicator.vue";
+import { useScenarioStore } from "@/stores/scanarioStore.ts";
+
+const { loadScenario, msdl } = useScenarioStore();
 
 const mlMap = shallowRef<maplibregl.Map>();
-const msdl = shallowRef<MilitaryScenario>();
-provide(activeScenarioKey, msdl);
 
 const dropZoneRef = useTemplateRef("dropZoneRef");
 
 const dialogStore = useDialogStore();
-const store = useLayerStore();
-
-function loadScenario(scenario: MilitaryScenario) {
-  msdl.value = scenario;
-  store.setSideLayers(scenario);
-}
 
 function onMapReady(map: maplibregl.Map) {
   mlMap.value = map;
 }
 
-async function getData() {
+async function loadExampleScenario() {
   const url = "/examples/MSDL-example.xml";
   // const url = "/examples/SampleMSDL.xml";
   // const url = "/examples/example3.xml";
   try {
-    store.layers.clear();
     const response = await fetch(url);
     const msdlAsText = await response.text();
-    msdl.value = MilitaryScenario.createFromString(msdlAsText);
-    // msdl.value.primarySide = msdl.value.sides[2];
-    msdl.value.sides.forEach((side) => {
-      store.layers.add(side.objectHandle);
-    });
+    loadScenario(MilitaryScenario.createFromString(msdlAsText));
   } catch (error) {
     console.error("Error fetching data:", error);
   }
 }
 
-getData();
+loadExampleScenario();
 
 const { isOverDropZone } = useFileDropZone(dropZoneRef, onDrop);
 
@@ -71,7 +59,7 @@ async function onDrop(files: File[] | null) {
 <template>
   <div class="h-full w-full flex flex-col relative" ref="dropZoneRef">
     <header class="flex-shrink-0">
-      <MainNavbar @loaded="loadScenario" />
+      <MainNavbar />
     </header>
     <main class="flex-auto relative">
       <MaplibreMap @ready="onMapReady" />

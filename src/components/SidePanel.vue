@@ -12,12 +12,12 @@ import ForceSideMenu from "@/components/ForceSideMenu.vue";
 import { Badge } from "@/components/ui/badge";
 import OrbatTree from "@/components/OrbatTree.vue";
 import { computed } from "vue";
-import { injectStrict, sortBy } from "@/utils.ts";
-import { activeScenarioKey } from "@/components/injects.ts";
+import { sortBy } from "@/utils.ts";
 import { Button } from "@/components/ui/button";
 import SwitchLabel from "@/components/SwitchLabel.vue";
+import { useScenarioStore } from "@/stores/scanarioStore.ts";
 
-const msdl = injectStrict(activeScenarioKey);
+const { msdl } = useScenarioStore();
 
 const store = useLayerStore();
 

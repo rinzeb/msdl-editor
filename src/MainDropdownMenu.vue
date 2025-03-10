@@ -14,23 +14,19 @@ import { ChevronDown } from "lucide-vue-next";
 import { useDialogStore } from "@/stores/dialogStore.ts";
 
 import { useLayerStore, useMapSettingsStore } from "@/stores/layerStore.ts";
-import { injectStrict } from "@/utils.ts";
-import { activeScenarioKey } from "@/components/injects.ts";
-import { MilitaryScenario } from "@orbat-mapper/msdllib";
 import { loadMSDLFromFile } from "@/lib/io.ts";
-
-const emit = defineEmits<{ loaded: [scenario: MilitaryScenario] }>();
+import { useScenarioStore } from "@/stores/scanarioStore.ts";
 
 const store = useLayerStore();
 const mapSettings = useMapSettingsStore();
-const msdl = injectStrict(activeScenarioKey);
+const { msdl, loadScenario } = useScenarioStore();
 
 const dialogStore = useDialogStore();
 
 async function doLoading() {
   try {
     const scn = await loadMSDLFromFile();
-    emit("loaded", scn);
+    loadScenario(scn);
   } catch (e) {
     console.error(e);
   }

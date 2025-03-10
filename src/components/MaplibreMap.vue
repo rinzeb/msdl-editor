@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref, useTemplateRef } from "vue";
-import { GlobeControl, Map as MlMap, NavigationControl, ScaleControl } from "maplibre-gl";
+import { onMounted, onUnmounted, useTemplateRef } from "vue";
+import { GlobeControl, Map as MlMap, NavigationControl } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 
 const emit = defineEmits(["ready"]);
