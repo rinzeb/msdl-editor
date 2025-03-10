@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import maplibregl, { GeoJSONSource, Map as MlMap } from "maplibre-gl";
 import { centroid } from "@turf/centroid";
-import { type ForceSide } from "@orbat-mapper/msdllib";
 import ms from "milsymbol";
 import { computed, watch, watchEffect } from "vue";
-import { sortBy } from "@/utils.ts";
+import { combineSidesToJson, sortBy } from "@/utils.ts";
 import { useLayerStore, useMapSettingsStore } from "@/stores/layerStore.ts";
 import { useSelectStore } from "@/stores/selectStore.ts";
 import { useScenarioStore } from "@/stores/scanarioStore.ts";
@@ -82,21 +81,6 @@ watch(
     }
   },
 );
-
-function combineSidesToJson(
-  sides: ForceSide[],
-  { includeUnits = true, includeEquipment = true } = {},
-) {
-  return {
-    type: "FeatureCollection",
-    features: sides
-      .map(
-        (side) =>
-          side.toGeoJson({ includeUnits, includeEquipment, includeIdInProperties: true }).features,
-      )
-      .flat(),
-  };
-}
 
 function addSidesToMap(map: MlMap) {
   const featureCollection = combineSidesToJson(sides.value);

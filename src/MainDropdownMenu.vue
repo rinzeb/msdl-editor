@@ -14,7 +14,7 @@ import { ChevronDown } from "lucide-vue-next";
 import { useDialogStore } from "@/stores/dialogStore.ts";
 
 import { useLayerStore, useMapSettingsStore } from "@/stores/layerStore.ts";
-import { loadMSDLFromFile } from "@/lib/io.ts";
+import { loadMSDLFromFile, downloadAsKMZ } from "@/lib/io.ts";
 import { useScenarioStore } from "@/stores/scanarioStore.ts";
 
 const store = useLayerStore();
@@ -52,6 +52,7 @@ async function doLoading() {
           <DropdownMenuItem @select="dialogStore.toggleUrlDialog()"
             >Load MSDL from URL ...</DropdownMenuItem
           >
+          <DropdownMenuItem @click="msdl && downloadAsKMZ(msdl)">Download KMZ</DropdownMenuItem>
         </DropdownMenuSubContent>
       </DropdownMenuSub>
       <DropdownMenuSub>

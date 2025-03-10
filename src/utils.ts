@@ -1,5 +1,6 @@
 import type { InjectionKey } from "vue";
 import { inject } from "vue";
+import type { ForceSide } from "@orbat-mapper/msdllib";
 
 export function sortBy<T extends object, K extends keyof T>(arr: T[], key: K, ascending = true) {
   return arr.sort((a, b) => {
@@ -28,4 +29,19 @@ export function injectStrict<T>(key: InjectionKey<T>, fallback?: T) {
   }
 
   return resolved;
+}
+
+export function combineSidesToJson(
+  sides: ForceSide[],
+  { includeUnits = true, includeEquipment = true } = {},
+) {
+  return {
+    type: "FeatureCollection",
+    features: sides
+      .map(
+        (side) =>
+          side.toGeoJson({ includeUnits, includeEquipment, includeIdInProperties: true }).features,
+      )
+      .flat(),
+  };
 }
