@@ -7,6 +7,7 @@ import { useUIStore } from "@/stores/uiStore.ts";
 import CloseButton from "@/components/CloseButton.vue";
 import { Button } from "@/components/ui/button";
 import PanelMapDisplay from "@/components/PanelMapDisplay.vue";
+import PaneScenarioInfo from "@/components/PaneScenarioInfo.vue";
 
 const uiStore = useUIStore();
 </script>
@@ -20,7 +21,7 @@ const uiStore = useUIStore();
         <TabsList class="grid flex-auto grid-cols-3">
           <TabsTrigger value="orbat">ORBAT</TabsTrigger>
           <TabsTrigger value="mapdisplay">Map display</TabsTrigger>
-          <TabsTrigger value="nn">Info</TabsTrigger>
+          <TabsTrigger value="scenarioInfo">Info</TabsTrigger>
         </TabsList>
         <CloseButton @click="uiStore.toggleLeftPanel()" />
       </header>
@@ -31,9 +32,7 @@ const uiStore = useUIStore();
         <TabsContent value="mapdisplay">
           <PanelMapDisplay class="mt-6" />
         </TabsContent>
-        <TabsContent value="nn">
-          <p>This is an empty tab.</p>
-        </TabsContent>
+        <TabsContent value="scenarioInfo"><PaneScenarioInfo /> </TabsContent>
       </ScrollArea>
     </Tabs>
   </aside>
