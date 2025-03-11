@@ -52,7 +52,10 @@ async function doLoading() {
           <DropdownMenuItem @select="dialogStore.toggleUrlDialog()"
             >Load MSDL from URL ...</DropdownMenuItem
           >
-          <DropdownMenuItem @click="msdl && downloadAsKMZ(msdl)">Download KMZ</DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem @click="msdl && downloadAsKMZ(msdl)"
+            >Export as KML/KMZ</DropdownMenuItem
+          >
         </DropdownMenuSubContent>
       </DropdownMenuSub>
       <DropdownMenuSub>
