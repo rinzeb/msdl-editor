@@ -19,33 +19,33 @@ import { useScenarioStore } from "@/stores/scanarioStore.ts";
 
 const { msdl } = useScenarioStore();
 
-const store = useLayerStore();
+const layerStore = useLayerStore();
 
 const sides = computed(() => {
   return sortBy(msdl.value?.sides ?? [], "name").filter((side) => side.rootUnits.length > 0);
 });
 
 function toggleLayers() {
-  if (store.layers.size >= sides.value.length) {
-    store.layers.clear();
+  if (layerStore.layers.size >= sides.value.length) {
+    layerStore.layers.clear();
     return;
   }
   sides.value.forEach((side) => {
-    store.layers.add(side.objectHandle);
+    layerStore.layers.add(side.objectHandle);
   });
 }
 
 const toggleSide = (id: string) => {
-  if (store.layers.has(id)) {
-    store.layers.delete(id);
+  if (layerStore.layers.has(id)) {
+    layerStore.layers.delete(id);
   } else {
-    store.layers.add(id);
+    layerStore.layers.add(id);
   }
 };
 </script>
 
 <template>
-  <Accordion type="multiple" class="mt-4">
+  <Accordion type="multiple" class="">
     <AccordionItem v-for="side in sides" :key="side.objectHandle" :value="side.objectHandle">
       <AccordionTrigger
         ><div class="flex items-center gap-2">
@@ -56,7 +56,7 @@ const toggleSide = (id: string) => {
           <div class="flex items-center gap-2">
             <Switch
               @click.stop
-              :modelValue="store.layers.has(side.objectHandle)"
+              :modelValue="layerStore.layers.has(side.objectHandle)"
               @update:modelValue="toggleSide(side.objectHandle)"
               title="Toggle visibility"
             />
@@ -73,12 +73,6 @@ const toggleSide = (id: string) => {
     </AccordionItem>
   </Accordion>
   <div v-if="msdl">
-    <h4 class="text-sm font-bold mt-2">Map display</h4>
-    <div class="grid gap-4 sm:grid-cols-2 grid-cols-1 mt-4">
-      <SwitchLabel v-model="store.showUnits">Show units</SwitchLabel>
-      <SwitchLabel v-model="store.showEquipment">Show equipment</SwitchLabel>
-      <SwitchLabel v-model="store.showLabels">Show labels</SwitchLabel>
-    </div>
     <div class="mt-4">
       <Button variant="secondary" @click="toggleLayers()">Toggle layers visibility</Button>
     </div>

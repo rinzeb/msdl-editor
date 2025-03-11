@@ -6,6 +6,7 @@ import SidePanel from "@/components/SidePanel.vue";
 import { useUIStore } from "@/stores/uiStore.ts";
 import CloseButton from "@/components/CloseButton.vue";
 import { Button } from "@/components/ui/button";
+import PanelMapDisplay from "@/components/PanelMapDisplay.vue";
 
 const uiStore = useUIStore();
 </script>
@@ -15,14 +16,20 @@ const uiStore = useUIStore();
     class="h-full max-h-[90vh] w-96 bg-card/95 pointer-events-auto border rounded-md relative"
   >
     <Tabs default-value="orbat" class="flex flex-col h-full">
-      <TabsList class="flex-0 grid w-full grid-cols-2 relative pr-10">
-        <TabsTrigger value="orbat">ORBAT</TabsTrigger>
-        <TabsTrigger value="nn">Info</TabsTrigger>
-        <CloseButton class="absolute right-2 top-2" @click="uiStore.toggleLeftPanel()" />
-      </TabsList>
-      <ScrollArea class="flex-auto p-2">
+      <header class="flex-0 flex items-center justify-between w-full gap-2 p-2">
+        <TabsList class="grid flex-auto grid-cols-3">
+          <TabsTrigger value="orbat">ORBAT</TabsTrigger>
+          <TabsTrigger value="mapdisplay">Map display</TabsTrigger>
+          <TabsTrigger value="nn">Info</TabsTrigger>
+        </TabsList>
+        <CloseButton @click="uiStore.toggleLeftPanel()" />
+      </header>
+      <ScrollArea class="flex-auto px-4">
         <TabsContent value="orbat">
           <SidePanel />
+        </TabsContent>
+        <TabsContent value="mapdisplay">
+          <PanelMapDisplay class="mt-6" />
         </TabsContent>
         <TabsContent value="nn">
           <p>This is an empty tab.</p>
