@@ -14,7 +14,7 @@ import { ChevronDown } from "lucide-vue-next";
 import { useDialogStore } from "@/stores/dialogStore.ts";
 
 import { useLayerStore, useMapSettingsStore } from "@/stores/layerStore.ts";
-import { loadMSDLFromFile, downloadAsKMZ } from "@/lib/io.ts";
+import { loadMSDLFromFile, downloadAsKMZ, downloadAsMSDL } from "@/lib/io.ts";
 import { useScenarioStore } from "@/stores/scanarioStore.ts";
 
 const store = useLayerStore();
@@ -31,6 +31,13 @@ async function doLoading() {
     console.error(e);
   }
 }
+
+async function onDownload() {
+  if (!msdl.value) {
+    return;
+  }
+  await downloadAsMSDL(msdl.value);
+}
 </script>
 <template>
   <DropdownMenu>
@@ -46,7 +53,7 @@ async function doLoading() {
       <DropdownMenuSub>
         <DropdownMenuSubTrigger>File</DropdownMenuSubTrigger>
         <DropdownMenuSubContent>
-          <DropdownMenuItem disabled>Download MSDL</DropdownMenuItem>
+          <DropdownMenuItem @click="onDownload">Download MSDL</DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem @click="doLoading">Load MSDL from file ...</DropdownMenuItem>
           <DropdownMenuItem @select="dialogStore.toggleUrlDialog()"

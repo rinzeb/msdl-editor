@@ -89,3 +89,10 @@ export async function downloadAsKMZ(scenario: MilitaryScenario) {
     { fileName: "scenario.kmz" },
   );
 }
+
+export async function downloadAsMSDL(scenario: MilitaryScenario) {
+  const { fileSave } = await import("browser-fs-access");
+  const data = scenario.toString();
+  const blob = new Blob([data], { type: "text/xml" });
+  await fileSave(blob, { fileName: "scenario" });
+}
