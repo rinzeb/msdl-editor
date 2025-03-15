@@ -12,6 +12,7 @@ import RightPanel from "@/components/RightPanel.vue";
 import { useFileDropZone } from "@/composables/filedragdrop.ts";
 import DropZoneIndicator from "@/components/DropZoneIndicator.vue";
 import { useScenarioStore } from "@/stores/scanarioStore.ts";
+import { progress } from "@/composables/progress.ts";
 
 const { loadScenario, msdl } = useScenarioStore();
 
@@ -26,6 +27,7 @@ function onMapReady(map: maplibregl.Map) {
 }
 
 async function loadExampleScenario() {
+  progress.start();
   const url = "/examples/MSDL-example.xml";
   // const url = "/examples/SampleMSDL.xml";
   // const url = "/examples/example3.xml";
@@ -36,6 +38,7 @@ async function loadExampleScenario() {
   } catch (error) {
     console.error("Error fetching data:", error);
   }
+  progress.done();
 }
 
 loadExampleScenario();

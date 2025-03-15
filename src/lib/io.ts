@@ -4,16 +4,20 @@ import ms from "milsymbol";
 import type { Root } from "@tmcw/togeojson";
 import type { TacticalJson } from "@orbat-mapper/msdllib/dist/lib/common";
 import type { FeatureCollection, Point } from "geojson";
+import { progress } from "@/composables/progress.ts";
 
 export async function loadMSDLFromFile() {
   const { fileOpen } = await import("browser-fs-access");
   try {
     const file = await fileOpen();
     const text = await file.text();
+    progress.start();
     return MilitaryScenario.createFromString(text);
   } catch (e) {
     console.error(e);
     throw e;
+  } finally {
+    progress.done();
   }
 }
 
@@ -58,6 +62,7 @@ async function createKMLString(scenario: MilitaryScenario, sidcs: string[]) {
 }
 
 export async function downloadAsKMZ(scenario: MilitaryScenario) {
+  progress.start();
   const { zipSync } = await import("fflate");
   const { fileSave } = await import("browser-fs-access");
   const data: Record<string, Uint8Array> = {};
@@ -82,6 +87,7 @@ export async function downloadAsKMZ(scenario: MilitaryScenario) {
   data["doc.kml"] = new TextEncoder().encode(kmlString);
 
   const zipData = zipSync(data);
+  progress.done();
   await fileSave(
     new Blob([zipData], {
       type: "application/octet-stream",
