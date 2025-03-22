@@ -9,7 +9,7 @@ import { progress } from "@/composables/progress.ts";
 export async function loadMSDLFromFile() {
   const { fileOpen } = await import("browser-fs-access");
   try {
-    const file = await fileOpen();
+    const file = await fileOpen({ extensions: [".xml"] });
     const text = await file.text();
     progress.start();
     return MilitaryScenario.createFromString(text);
