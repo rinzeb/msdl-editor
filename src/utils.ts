@@ -45,3 +45,10 @@ export function combineSidesToJson(
       .flat(),
   };
 }
+
+export function inputEventFilter(event: Event) {
+  return !(
+    ["INPUT", "TEXTAREA"].includes((event.target as HTMLElement).tagName) ||
+    (event.target as HTMLElement).dataset?.indent // added for FilterTree to avoid intervening with search
+  );
+}

@@ -3,7 +3,7 @@ import MaplibreMap from "@/components/MaplibreMap.vue";
 import MainNavbar from "@/components/MainNavbar.vue";
 import LoadFromUrlDialog from "@/components/LoadFromUrlDialog.vue";
 import { useDialogStore } from "@/stores/dialogStore.ts";
-import { shallowRef, useTemplateRef } from "vue";
+import { ref, shallowRef, useTemplateRef } from "vue";
 import { MilitaryScenario } from "@orbat-mapper/msdllib";
 import maplibregl from "maplibre-gl";
 import MapLogic from "@/components/MapLogic.vue";
@@ -13,10 +13,13 @@ import { useFileDropZone } from "@/composables/filedragdrop.ts";
 import DropZoneIndicator from "@/components/DropZoneIndicator.vue";
 import { useScenarioStore } from "@/stores/scanarioStore.ts";
 import { progress } from "@/composables/progress.ts";
-
+import { GlobalEvents } from "vue-global-events";
+import { inputEventFilter } from "@/utils.ts";
+import CommandPalette from "@/components/CommandPalette.vue";
 const { loadScenario, msdl } = useScenarioStore();
 
 const mlMap = shallowRef<maplibregl.Map>();
+const showSearch = ref(false);
 
 const dropZoneRef = useTemplateRef("dropZoneRef");
 
@@ -74,5 +77,12 @@ async function onDrop(files: File[] | null) {
     </main>
     <LoadFromUrlDialog v-model:open="dialogStore.isUrlDialogOpen" @loaded="loadScenario" />
     <DropZoneIndicator v-if="isOverDropZone" />
+    <GlobalEvents
+      :filter="inputEventFilter"
+      @keydown.ctrl.k.prevent="showSearch = true"
+      @keydown.meta.k.prevent="showSearch = true"
+      @keyup.prevent.alt.k="showSearch = true"
+    />
+    <CommandPalette v-model:open="showSearch" />
   </div>
 </template>
