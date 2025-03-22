@@ -14,30 +14,15 @@ import { ChevronDown } from "lucide-vue-next";
 import { useDialogStore } from "@/stores/dialogStore.ts";
 
 import { useLayerStore, useMapSettingsStore } from "@/stores/layerStore.ts";
-import { loadMSDLFromFile, downloadAsKMZ, downloadAsMSDL } from "@/lib/io.ts";
 import { useScenarioStore } from "@/stores/scanarioStore.ts";
+import { useScenarioActions } from "@/composables/scenarioActions.ts";
 
 const store = useLayerStore();
 const mapSettings = useMapSettingsStore();
-const { msdl, loadScenario } = useScenarioStore();
+const { msdl } = useScenarioStore();
+const { dispatchAction } = useScenarioActions();
 
 const dialogStore = useDialogStore();
-
-async function doLoading() {
-  try {
-    const scn = await loadMSDLFromFile();
-    loadScenario(scn);
-  } catch (e) {
-    console.error(e);
-  }
-}
-
-async function onDownload() {
-  if (!msdl.value) {
-    return;
-  }
-  await downloadAsMSDL(msdl.value);
-}
 </script>
 <template>
   <DropdownMenu>
@@ -53,14 +38,16 @@ async function onDownload() {
       <DropdownMenuSub>
         <DropdownMenuSubTrigger>File</DropdownMenuSubTrigger>
         <DropdownMenuSubContent>
-          <DropdownMenuItem @click="onDownload">Download MSDL</DropdownMenuItem>
+          <DropdownMenuItem @click="dispatchAction('DownloadMSDL')">Download MSDL</DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem @click="doLoading">Load MSDL from file ...</DropdownMenuItem>
+          <DropdownMenuItem @click="dispatchAction('LoadMSDLFromFile')"
+            >Load MSDL from file ...</DropdownMenuItem
+          >
           <DropdownMenuItem @select="dialogStore.toggleUrlDialog()"
             >Load MSDL from URL ...</DropdownMenuItem
           >
           <DropdownMenuSeparator />
-          <DropdownMenuItem @click="msdl && downloadAsKMZ(msdl)"
+          <DropdownMenuItem @click="dispatchAction('ExportKML')"
             >Export as KML/KMZ</DropdownMenuItem
           >
         </DropdownMenuSubContent>
