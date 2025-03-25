@@ -7,14 +7,17 @@ export function useScenarioActions() {
   const { msdl, loadScenario } = useScenarioStore();
 
   async function dispatchAction(action: ScenarioAction) {
-    if (!msdl.value) {
-      return;
-    }
     switch (action) {
       case "DownloadMSDL":
+        if (!msdl.value) {
+          return;
+        }
         await downloadAsMSDL(msdl.value);
         break;
       case "ExportKML":
+        if (!msdl.value) {
+          return;
+        }
         await downloadAsKMZ(msdl.value);
         break;
       case "LoadMSDLFromFile":
