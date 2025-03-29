@@ -85,7 +85,7 @@ export async function downloadAsKMZ(scenario: MilitaryScenario) {
   data["doc.kml"] = new TextEncoder().encode(kmlString);
 
   const zipData = zipSync(data);
-  await saveBlobToLocalFile(
+  return await saveBlobToLocalFile(
     new Blob([zipData], {
       type: "application/octet-stream",
     }),
@@ -95,5 +95,5 @@ export async function downloadAsKMZ(scenario: MilitaryScenario) {
 
 export async function downloadAsMSDL(scenario: MilitaryScenario) {
   const blob = new Blob([scenario.toString()], { type: "text/xml" });
-  await saveBlobToLocalFile(blob, "scenario.xml", { extensions: [".xml"] });
+  return await saveBlobToLocalFile(blob, "scenario.xml", { extensions: [".xml"] });
 }
