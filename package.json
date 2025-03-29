@@ -18,7 +18,7 @@
     "@tanstack/vue-table": "^8.21.2",
     "@tmcw/togeojson": "^7.0.0",
     "@turf/turf": "^7.2.0",
-    "@vueuse/core": "^12.8.2",
+    "@vueuse/core": "^13.0.0",
     "browser-fs-access": "^0.35.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
