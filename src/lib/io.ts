@@ -1,5 +1,5 @@
 import { MilitaryScenario } from "@orbat-mapper/msdllib";
-import { combineSidesToJson } from "@/utils.ts";
+import { combineSidesToJson, saveBlobToLocalFile } from "@/utils.ts";
 import ms from "milsymbol";
 import type { Root } from "@tmcw/togeojson";
 import type { TacticalJson } from "@orbat-mapper/msdllib/dist/lib/common";
@@ -62,9 +62,7 @@ async function createKMLString(scenario: MilitaryScenario, sidcs: string[]) {
 }
 
 export async function downloadAsKMZ(scenario: MilitaryScenario) {
-  progress.start();
   const { zipSync } = await import("fflate");
-  const { fileSave } = await import("browser-fs-access");
   const data: Record<string, Uint8Array> = {};
   const usedSidcs = new Set<string>();
   // create symbol icons
@@ -87,18 +85,15 @@ export async function downloadAsKMZ(scenario: MilitaryScenario) {
   data["doc.kml"] = new TextEncoder().encode(kmlString);
 
   const zipData = zipSync(data);
-  progress.done();
-  await fileSave(
+  await saveBlobToLocalFile(
     new Blob([zipData], {
       type: "application/octet-stream",
     }),
-    { fileName: "scenario.kmz" },
+    "scenario.kmz",
   );
 }
 
 export async function downloadAsMSDL(scenario: MilitaryScenario) {
-  const { fileSave } = await import("browser-fs-access");
-  const data = scenario.toString();
-  const blob = new Blob([data], { type: "text/xml" });
-  await fileSave(blob, { fileName: "scenario" });
+  const blob = new Blob([scenario.toString()], { type: "text/xml" });
+  await saveBlobToLocalFile(blob, "scenario.xml", { extensions: [".xml"] });
 }

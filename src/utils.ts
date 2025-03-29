@@ -52,3 +52,20 @@ export function inputEventFilter(event: Event) {
     (event.target as HTMLElement).dataset?.indent // added for FilterTree to avoid intervening with search
   );
 }
+
+export async function saveBlobToLocalFile(
+  data: Blob | Promise<Blob> | Response,
+  fileName: string,
+  options: { mimeTypes?: string[]; extensions?: string[] } = {},
+) {
+  const { fileSave } = await import("browser-fs-access");
+  try {
+    return await fileSave(data, { fileName, ...options });
+  } catch (error) {
+    if (error instanceof DOMException && error.name === "AbortError") {
+      return;
+    } else {
+      throw error;
+    }
+  }
+}
