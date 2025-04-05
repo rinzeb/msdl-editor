@@ -64,7 +64,7 @@ async function onDrop(files: File[] | null) {
 </script>
 <template>
   <div class="h-full w-full flex flex-col relative" ref="dropZoneRef">
-    <header class="flex-shrink-0">
+    <header class="shrink-0">
       <MainNavbar />
     </header>
     <main class="flex-auto relative">

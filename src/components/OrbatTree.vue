@@ -34,7 +34,7 @@ console.log(props.side);
       :key="item._id"
       :style="{ 'padding-left': `${item.level - 0.5}rem` }"
       v-bind="item.bind"
-      class="flex items-center py-1 px-2 my-0.5 rounded outline-none focus:ring-grass8 focus:ring-2 data-[selected]:bg-grass4"
+      class="flex items-center py-1 px-2 my-0.5 rounded outline-hidden focus:ring-grass8 focus:ring-2 data-selected:bg-grass4"
       @keydown.up.stop
       @keydown.down.stop
       @select="onSelect(item)"
