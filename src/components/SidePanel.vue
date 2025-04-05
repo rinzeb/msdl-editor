@@ -14,7 +14,6 @@ import OrbatTree from "@/components/OrbatTree.vue";
 import { computed } from "vue";
 import { sortBy } from "@/utils.ts";
 import { Button } from "@/components/ui/button";
-import SwitchLabel from "@/components/SwitchLabel.vue";
 import { useScenarioStore } from "@/stores/scanarioStore.ts";
 
 const { msdl } = useScenarioStore();
