@@ -1,3 +1,4 @@
+import "inter-ui/inter-variable.css";
 import "./assets/index.css";
 import "trickling/lib/style.css";
 
