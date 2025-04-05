@@ -10,10 +10,15 @@ import {
 } from "@/components/ui/command";
 
 import { Download, Upload } from "lucide-vue-next";
-import { useScenarioActions } from "@/composables/scenarioActions.ts";
+import { type ScenarioAction, useScenarioActions } from "@/composables/scenarioActions.ts";
 
 const open = defineModel<boolean>("open", { default: false });
-const { dispatchAction } = useScenarioActions();
+const { dispatchAction: _dispatchAction } = useScenarioActions();
+
+function dispatchAction(action: ScenarioAction) {
+  _dispatchAction(action);
+  open.value = false;
+}
 </script>
 
 <template>
