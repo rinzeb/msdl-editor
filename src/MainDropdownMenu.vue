@@ -10,7 +10,7 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ChevronDown } from "lucide-vue-next";
+import { ChevronDown, ExternalLinkIcon } from "lucide-vue-next";
 import { useDialogStore } from "@/stores/dialogStore.ts";
 
 import { useLayerStore, useMapSettingsStore } from "@/stores/layerStore.ts";
@@ -69,6 +69,17 @@ const dialogStore = useDialogStore();
           >
           <DropdownMenuCheckboxItem v-model="mapSettings.showOverdrawInspector" @select.prevent
             >Show overdraw inspector</DropdownMenuCheckboxItem
+          >
+        </DropdownMenuSubContent>
+      </DropdownMenuSub>
+      <DropdownMenuSeparator />
+      <DropdownMenuSub>
+        <DropdownMenuSubTrigger>About</DropdownMenuSubTrigger>
+        <DropdownMenuSubContent>
+          <DropdownMenuItem as-child
+            ><a href="https://github.com/orbat-mapper/msdl-editor/" target="_blank"
+              ><ExternalLinkIcon /> GitHub project page</a
+            ></DropdownMenuItem
           >
         </DropdownMenuSubContent>
       </DropdownMenuSub>
