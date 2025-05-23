@@ -1,6 +1,7 @@
 import type { InjectionKey } from "vue";
 import { inject } from "vue";
 import type { ForceSide } from "@orbat-mapper/msdllib";
+import type { Position } from "geojson";
 
 export function sortBy<T extends object, K extends keyof T>(arr: T[], key: K, ascending = true) {
   return arr.sort((a, b) => {
@@ -68,4 +69,12 @@ export async function saveBlobToLocalFile(
       throw error;
     }
   }
+}
+
+export function formatDecimalDegrees(p?: Position, precision = 4) {
+  if (!p) return "";
+  const [lon, lat] = p;
+  return `${Math.abs(lat).toFixed(precision)}° ${lat >= 0 ? "N" : "S"} ${Math.abs(lon).toFixed(
+    precision,
+  )}° ${lon >= 0 ? "E" : "W"}`;
 }

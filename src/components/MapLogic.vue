@@ -9,6 +9,7 @@ import { useSelectStore } from "@/stores/selectStore.ts";
 import { useScenarioStore } from "@/stores/scanarioStore.ts";
 
 const props = defineProps<{ mlMap: MlMap }>();
+const emit = defineEmits(["showContextMenu"]);
 const { msdl } = useScenarioStore();
 
 const store = useLayerStore();
@@ -26,7 +27,7 @@ watchEffect(() => {
     includeUnits: store.showUnits,
     includeEquipment: store.showEquipment,
   });
-  console.log(featureCollection);
+  // console.log(featureCollection);
   const source = props.mlMap.getSource("sides") as GeoJSONSource;
   if (!source) return;
   source.setData(featureCollection as never);
@@ -158,6 +159,11 @@ function addSidesToMap(map: MlMap) {
   // Change it back to a pointer when it leaves.
   map.on("mouseleave", "sides", () => {
     map.getCanvas().style.cursor = "";
+  });
+
+  map.on("contextmenu", (ev) => {
+    emit("showContextMenu", ev);
+    ev.preventDefault();
   });
 
   setTextField();
