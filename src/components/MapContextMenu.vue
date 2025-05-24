@@ -76,12 +76,11 @@ function returnMapProviders(lonLat: Position, zoomLevel = 15) {
       <DropdownMenuSeparator />
 
       <DropdownMenuSub>
-        <DropdownMenuSubTrigger inset><span>Open in</span></DropdownMenuSubTrigger>
+        <DropdownMenuSubTrigger><span>Open in</span></DropdownMenuSubTrigger>
         <DropdownMenuSubContent>
           <DropdownMenuItem
             v-for="{ name, url } in returnMapProviders(dropPosition)"
             :key="url"
-            inset
             as-child
             ><a :href="url" target="_blank">{{ name }}</a></DropdownMenuItem
           >

@@ -5,7 +5,7 @@ import LoadFromUrlDialog from "@/components/LoadFromUrlDialog.vue";
 import { useDialogStore } from "@/stores/dialogStore.ts";
 import { ref, shallowRef, useTemplateRef } from "vue";
 import { MilitaryScenario } from "@orbat-mapper/msdllib";
-import maplibregl, { MapMouseEvent } from "maplibre-gl";
+import maplibregl from "maplibre-gl";
 import MapLogic from "@/components/MapLogic.vue";
 import LeftPanel from "@/components/LeftPanel.vue";
 import RightPanel from "@/components/RightPanel.vue";
@@ -16,26 +16,8 @@ import { progress } from "@/composables/progress.ts";
 import { GlobalEvents } from "vue-global-events";
 import { inputEventFilter } from "@/utils.ts";
 import CommandPalette from "@/components/CommandPalette.vue";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuPortal,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import MapContextMenu from "@/components/MapContextMenu.vue";
 
 const { loadScenario, msdl } = useScenarioStore();
-
-const isOpen = ref(false);
-const mapEvent = ref<MapMouseEvent>();
 
 const mlMap = shallowRef<maplibregl.Map>();
 const showSearch = ref(false);
@@ -80,11 +62,6 @@ async function onDrop(files: File[] | null) {
     console.error("Failed to load", file.name, e);
   }
 }
-
-function onShowContextMenu(event: MapMouseEvent) {
-  mapEvent.value = event;
-  isOpen.value = true;
-}
 </script>
 <template>
   <div class="h-full w-full flex flex-col relative" ref="dropZoneRef">
@@ -93,9 +70,7 @@ function onShowContextMenu(event: MapMouseEvent) {
     </header>
     <main class="flex-auto relative">
       <MaplibreMap @ready="onMapReady" />
-      <MapContextMenu v-model="isOpen" :event="mapEvent" />
-      <!--        <MaplibreMap @ready="onMapReady" />-->
-      <MapLogic v-if="mlMap && msdl" :mlMap="mlMap" @showContextMenu="onShowContextMenu" />
+      <MapLogic v-if="mlMap && msdl" :mlMap="mlMap" />
       <div class="absolute inset-0 pointer-events-none p-2">
         <LeftPanel />
         <RightPanel :mlMap />

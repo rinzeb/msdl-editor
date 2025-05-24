@@ -2,15 +2,19 @@
 import maplibregl, { GeoJSONSource, Map as MlMap } from "maplibre-gl";
 import { centroid } from "@turf/centroid";
 import ms from "milsymbol";
-import { computed, watch, watchEffect } from "vue";
+import { computed, ref, watch, watchEffect } from "vue";
 import { combineSidesToJson, sortBy } from "@/utils.ts";
 import { useLayerStore, useMapSettingsStore } from "@/stores/layerStore.ts";
 import { useSelectStore } from "@/stores/selectStore.ts";
 import { useScenarioStore } from "@/stores/scanarioStore.ts";
+import MapContextMenu from "@/components/MapContextMenu.vue";
 
 const props = defineProps<{ mlMap: MlMap }>();
 const emit = defineEmits(["showContextMenu"]);
 const { msdl } = useScenarioStore();
+
+const isOpen = ref(false);
+const mapEvent = ref<maplibregl.MapMouseEvent>();
 
 const store = useLayerStore();
 const mapSettings = useMapSettingsStore();
@@ -27,7 +31,6 @@ watchEffect(() => {
     includeUnits: store.showUnits,
     includeEquipment: store.showEquipment,
   });
-  // console.log(featureCollection);
   const source = props.mlMap.getSource("sides") as GeoJSONSource;
   if (!source) return;
   source.setData(featureCollection as never);
@@ -162,6 +165,9 @@ function addSidesToMap(map: MlMap) {
   });
 
   map.on("contextmenu", (ev) => {
+    mapEvent.value = ev;
+    isOpen.value = true;
+
     emit("showContextMenu", ev);
     ev.preventDefault();
   });
@@ -171,4 +177,6 @@ function addSidesToMap(map: MlMap) {
 
 addSidesToMap(props.mlMap);
 </script>
-<template><slot /></template>
+<template>
+  <MapContextMenu v-model="isOpen" :event="mapEvent" />
+</template>
