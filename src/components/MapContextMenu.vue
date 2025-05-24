@@ -1,13 +1,15 @@
 <script setup lang="ts">
+// The shadcn context menu component is not compatible with maplibre-gl. The contextmenu event
+// is not triggered as expected. A workaround is to use the maplibre-gl context menu event and
+// dropdown menu that will be positioned manually. Unfortunately we lose the longpress event,
+// so it will currently not work on mobile devices.
+
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuPortal,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuSub,
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
@@ -63,13 +65,17 @@ function returnMapProviders(lonLat: Position, zoomLevel = 15) {
 
 <template>
   <DropdownMenu v-model:open="isOpen">
-    <DropdownMenuTrigger class="absolute pointer-events-none" :style="style">
-      <CrosshairIcon
-        class="text-red-900 -translate-x-1/2 -translate-y-1/2"
-        :class="isOpen ? '' : 'hidden'"
-      />
+    <DropdownMenuTrigger
+      class="absolute pointer-events-none data-[state=closed]:*:hidden"
+      :style="style"
+    >
+      <CrosshairIcon class="size-6 text-red-900/70 -translate-x-1/2 -translate-y-1/2" />
     </DropdownMenuTrigger>
-    <DropdownMenuContent class="w-56" align="start" :sideOffset="0">
+    <DropdownMenuContent
+      class="w-56 data-[state=open]:animate-none data-[state=closed]:animate-none"
+      align="start"
+      :sideOffset="0"
+    >
       <DropdownMenuLabel v-if="event">{{
         formatDecimalDegrees([event.lngLat.lng, event.lngLat.lat])
       }}</DropdownMenuLabel>
