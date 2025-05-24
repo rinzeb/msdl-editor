@@ -16,21 +16,22 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { CrosshairIcon } from "lucide-vue-next";
-import type { MapMouseEvent } from "maplibre-gl";
 import { computed } from "vue";
 import { formatDecimalDegrees } from "@/utils.ts";
 import type { Position } from "geojson";
+import type { MapContextMenuEvent } from "@/components/types.ts";
 
-const props = defineProps<{ event?: MapMouseEvent }>();
+const props = defineProps<{ event?: MapContextMenuEvent }>();
 const isOpen = defineModel({ default: false });
-const dropPosition = computed(() => {
+
+const clickPosition = computed(() => {
   if (!props.event) return [0, 0];
-  return [props.event.lngLat.lng, props.event.lngLat.lat];
+  return [...props.event.position];
 });
 
 const style = computed(() => ({
-  top: `${props.event?.point.y}px`,
-  left: `${props.event?.point.x}px`,
+  top: `${props.event?.y}px`,
+  left: `${props.event?.x}px`,
 }));
 
 function returnMapProviders(lonLat: Position, zoomLevel = 15) {
@@ -76,16 +77,14 @@ function returnMapProviders(lonLat: Position, zoomLevel = 15) {
       align="start"
       :sideOffset="0"
     >
-      <DropdownMenuLabel v-if="event">{{
-        formatDecimalDegrees([event.lngLat.lng, event.lngLat.lat])
-      }}</DropdownMenuLabel>
+      <DropdownMenuLabel v-if="event">{{ formatDecimalDegrees(clickPosition) }}</DropdownMenuLabel>
       <DropdownMenuSeparator />
 
       <DropdownMenuSub>
         <DropdownMenuSubTrigger><span>Open in</span></DropdownMenuSubTrigger>
         <DropdownMenuSubContent>
           <DropdownMenuItem
-            v-for="{ name, url } in returnMapProviders(dropPosition)"
+            v-for="{ name, url } in returnMapProviders(clickPosition, event?.zoomLevel)"
             :key="url"
             as-child
             ><a :href="url" target="_blank">{{ name }}</a></DropdownMenuItem

@@ -8,13 +8,14 @@ import { useLayerStore, useMapSettingsStore } from "@/stores/layerStore.ts";
 import { useSelectStore } from "@/stores/selectStore.ts";
 import { useScenarioStore } from "@/stores/scanarioStore.ts";
 import MapContextMenu from "@/components/MapContextMenu.vue";
+import type { MapContextMenuEvent } from "@/components/types.ts";
 
 const props = defineProps<{ mlMap: MlMap }>();
 const emit = defineEmits(["showContextMenu"]);
 const { msdl } = useScenarioStore();
 
 const isOpen = ref(false);
-const mapEvent = ref<maplibregl.MapMouseEvent>();
+const mapEvent = ref<MapContextMenuEvent>();
 
 const store = useLayerStore();
 const mapSettings = useMapSettingsStore();
@@ -165,7 +166,12 @@ function addSidesToMap(map: MlMap) {
   });
 
   map.on("contextmenu", (ev) => {
-    mapEvent.value = ev;
+    mapEvent.value = {
+      x: ev.point.x,
+      y: ev.point.y,
+      position: [ev.lngLat.lng, ev.lngLat.lat],
+      zoomLevel: Math.round(map.getZoom()),
+    };
     isOpen.value = true;
 
     emit("showContextMenu", ev);
