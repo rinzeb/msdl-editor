@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import maplibregl, { GeoJSONSource, Map as MlMap } from "maplibre-gl";
+import maplibregl, { GeoJSONSource, Map as MlMap, type Subscription } from "maplibre-gl";
 import { centroid } from "@turf/centroid";
 import ms from "milsymbol";
-import { computed, ref, watch, watchEffect } from "vue";
+import { computed, onUnmounted, ref, watch, watchEffect } from "vue";
 import { combineSidesToJson, sortBy } from "@/utils.ts";
 import { useLayerStore, useMapSettingsStore } from "@/stores/layerStore.ts";
 import { useSelectStore } from "@/stores/selectStore.ts";
@@ -24,6 +24,10 @@ const selectStore = useSelectStore();
 const sides = computed(() => {
   return sortBy(msdl.value?.sides ?? [], "name").filter((side) => side.rootUnits.length > 0);
 });
+
+// store event subscription
+let contextmenuSub: Subscription;
+let clickSub: Subscription;
 
 watchEffect(() => {
   const visibleSides = sides.value.filter((side) => store.layers.has(side.objectHandle));
@@ -128,7 +132,7 @@ function addSidesToMap(map: MlMap) {
 
   // When a click event occurs on a feature in the places layer, open a popup at the
   // location of the feature, with description HTML from its properties.
-  map.on("click", "sides", (e) => {
+  clickSub = map.on("click", "sides", (e) => {
     if (!e.features) return;
 
     if (e.features[0].geometry.type !== "Point") {
@@ -165,15 +169,22 @@ function addSidesToMap(map: MlMap) {
     map.getCanvas().style.cursor = "";
   });
 
-  map.on("contextmenu", (ev) => {
+  contextmenuSub = map.on("contextmenu", (ev) => {
+    const features = map.queryRenderedFeatures(ev.point, {
+      layers: ["sides"],
+    });
     mapEvent.value = {
       x: ev.point.x,
       y: ev.point.y,
       position: [ev.lngLat.lng, ev.lngLat.lat],
       zoomLevel: Math.round(map.getZoom()),
+      items: features?.map((f) => ({
+        id: f.properties.id,
+        label: f.properties.label,
+        sidc: f.properties.sidc,
+      })),
     };
     isOpen.value = true;
-
     emit("showContextMenu", ev);
     ev.preventDefault();
   });
@@ -182,6 +193,11 @@ function addSidesToMap(map: MlMap) {
 }
 
 addSidesToMap(props.mlMap);
+
+onUnmounted(() => {
+  contextmenuSub?.unsubscribe();
+  clickSub?.unsubscribe();
+});
 </script>
 <template>
   <MapContextMenu v-model="isOpen" :event="mapEvent" />

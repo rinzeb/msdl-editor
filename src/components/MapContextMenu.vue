@@ -20,9 +20,16 @@ import { computed } from "vue";
 import { formatDecimalDegrees } from "@/utils.ts";
 import type { Position } from "geojson";
 import type { MapContextMenuEvent } from "@/components/types.ts";
+import MilSymbol from "@/components/MilSymbol.vue";
+import { useSelectStore } from "@/stores/selectStore.ts";
+import { useScenarioStore } from "@/stores/scanarioStore.ts";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Badge } from "@/components/ui/badge";
 
 const props = defineProps<{ event?: MapContextMenuEvent }>();
 const isOpen = defineModel({ default: false });
+const selectStore = useSelectStore();
+const { msdl } = useScenarioStore();
 
 const clickPosition = computed(() => {
   if (!props.event) return [0, 0];
@@ -62,6 +69,12 @@ function returnMapProviders(lonLat: Position, zoomLevel = 15) {
     },
   ];
 }
+
+function onUnitSelect(activeItemId?: string) {
+  if (!activeItemId) return;
+  selectStore.activeItem =
+    (msdl.value?.getUnitById(activeItemId) || msdl.value?.getEquipmentById(activeItemId)) ?? null;
+}
 </script>
 
 <template>
@@ -92,6 +105,23 @@ function returnMapProviders(lonLat: Position, zoomLevel = 15) {
         </DropdownMenuSubContent>
       </DropdownMenuSub>
       <DropdownMenuSeparator />
+      <DropdownMenuSub v-if="event?.items?.length">
+        <DropdownMenuSubTrigger
+          >Units
+          <Badge class="ml-2" variant="secondary">{{
+            event.items.length
+          }}</Badge></DropdownMenuSubTrigger
+        >
+        <DropdownMenuSubContent class="max-h-[70vh] overflow-auto">
+          <DropdownMenuItem
+            v-for="item in event.items"
+            :key="item.id"
+            @select.prevent="onUnitSelect(item.id)"
+          >
+            <MilSymbol :sidc="item.sidc" /><span class="">{{ item.label }}</span>
+          </DropdownMenuItem>
+        </DropdownMenuSubContent>
+      </DropdownMenuSub>
     </DropdownMenuContent>
   </DropdownMenu>
 </template>
