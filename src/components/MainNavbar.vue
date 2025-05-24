@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import MainDropdownMenu from "@/MainDropdownMenu.vue";
+import MainDropdownMenu from "@/components/MainDropdownMenu.vue";
 import { MoonIcon, SunIcon } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import { useDark, useToggle } from "@vueuse/core";
