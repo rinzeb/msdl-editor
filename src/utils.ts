@@ -36,14 +36,31 @@ export function combineSidesToJson(
   sides: ForceSide[],
   { includeUnits = true, includeEquipment = true } = {},
 ) {
+  const unitFeatures = sides
+    .map(
+      (side) =>
+        side.toGeoJson({ includeUnits, includeEquipment: false, includeIdInProperties: true })
+          .features,
+    )
+    .flat()
+    .map((feature) => ({
+      ...feature,
+      properties: { ...feature.properties, type: "unit" },
+    }));
+  const equipmentFeatures = sides
+    .map(
+      (side) =>
+        side.toGeoJson({ includeUnits: false, includeEquipment, includeIdInProperties: true })
+          .features,
+    )
+    .flat()
+    .map((feature) => ({
+      ...feature,
+      properties: { ...feature.properties, type: "equipment" },
+    }));
   return {
     type: "FeatureCollection",
-    features: sides
-      .map(
-        (side) =>
-          side.toGeoJson({ includeUnits, includeEquipment, includeIdInProperties: true }).features,
-      )
-      .flat(),
+    features: [...unitFeatures, ...equipmentFeatures],
   };
 }
 

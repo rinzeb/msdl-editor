@@ -23,7 +23,6 @@ import type { MapContextMenuEvent } from "@/components/types.ts";
 import MilSymbol from "@/components/MilSymbol.vue";
 import { useSelectStore } from "@/stores/selectStore.ts";
 import { useScenarioStore } from "@/stores/scanarioStore.ts";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 
 const props = defineProps<{ event?: MapContextMenuEvent }>();
@@ -105,16 +104,32 @@ function onUnitSelect(activeItemId?: string) {
         </DropdownMenuSubContent>
       </DropdownMenuSub>
       <DropdownMenuSeparator />
-      <DropdownMenuSub v-if="event?.items?.length">
+      <DropdownMenuSub v-if="event?.units?.length">
         <DropdownMenuSubTrigger
           >Units
           <Badge class="ml-2" variant="secondary">{{
-            event.items.length
+            event.units.length
           }}</Badge></DropdownMenuSubTrigger
         >
         <DropdownMenuSubContent class="max-h-[70vh] overflow-auto">
           <DropdownMenuItem
-            v-for="item in event.items"
+            v-for="item in event.units"
+            :key="item.id"
+            @select.prevent="onUnitSelect(item.id)"
+          >
+            <MilSymbol :sidc="item.sidc" /><span class="">{{ item.label }}</span>
+          </DropdownMenuItem>
+        </DropdownMenuSubContent> </DropdownMenuSub
+      ><DropdownMenuSub v-if="event?.equipment?.length">
+        <DropdownMenuSubTrigger
+          >Equipment
+          <Badge class="ml-2" variant="secondary">{{
+            event.equipment.length
+          }}</Badge></DropdownMenuSubTrigger
+        >
+        <DropdownMenuSubContent class="max-h-[70vh] overflow-auto">
+          <DropdownMenuItem
+            v-for="item in event.equipment"
             :key="item.id"
             @select.prevent="onUnitSelect(item.id)"
           >

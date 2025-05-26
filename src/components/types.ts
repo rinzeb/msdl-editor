@@ -5,7 +5,12 @@ export type MapContextMenuEvent = {
   y: number;
   position: Position;
   zoomLevel?: number;
-  items?: {
+  units?: {
+    id?: string;
+    sidc?: string;
+    label?: string;
+  }[];
+  equipment?: {
     id?: string;
     sidc?: string;
     label?: string;

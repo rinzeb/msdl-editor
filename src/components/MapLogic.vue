@@ -178,11 +178,20 @@ function addSidesToMap(map: MlMap) {
       y: ev.point.y,
       position: [ev.lngLat.lng, ev.lngLat.lat],
       zoomLevel: Math.round(map.getZoom()),
-      items: features?.map((f) => ({
-        id: f.properties.id,
-        label: f.properties.label,
-        sidc: f.properties.sidc,
-      })),
+      units: features
+        ?.filter((f) => f.properties.type === "unit")
+        .map((f) => ({
+          id: f.properties.id,
+          label: f.properties.label,
+          sidc: f.properties.sidc,
+        })),
+      equipment: features
+        ?.filter((f) => f.properties.type === "equipment")
+        .map((f) => ({
+          id: f.properties.id,
+          label: f.properties.label,
+          sidc: f.properties.sidc,
+        })),
     };
     isOpen.value = true;
     emit("showContextMenu", ev);
