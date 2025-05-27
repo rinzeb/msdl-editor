@@ -40,11 +40,11 @@ const affiliation = computed({
 <template>
   <DropdownMenu>
     <DropdownMenuTrigger as-child>
-      <Button @click.stop variant="outline" size="icon">
+      <Button @click.stop variant="ghost" size="icon">
         <DotsVerticalIcon class="size-4" />
       </Button>
     </DropdownMenuTrigger>
-    <DropdownMenuContent class="">
+    <DropdownMenuContent align="end">
       <DropdownMenuLabel>ForceSide actions</DropdownMenuLabel>
       <DropdownMenuSeparator />
       <DropdownMenuItem @select.prevent="setPrimarySide">Set as primary side</DropdownMenuItem>
