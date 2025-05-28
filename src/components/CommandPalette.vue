@@ -39,6 +39,10 @@ function dispatchAction(action: ScenarioAction) {
           <Download />
           <span>Export as KML/KMZ</span>
         </CommandItem>
+        <CommandItem value="LOAD_FROM_URL" @select="dispatchAction('LoadFromUrl')">
+          <Upload />
+          <span>Load MSDL from URL ...</span>
+        </CommandItem>
       </CommandGroup>
       <CommandSeparator />
     </CommandList>
