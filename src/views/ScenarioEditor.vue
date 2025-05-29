@@ -16,6 +16,7 @@ import { progress } from "@/composables/progress.ts";
 import { GlobalEvents } from "vue-global-events";
 import { inputEventFilter } from "@/utils.ts";
 import CommandPalette from "@/components/CommandPalette.vue";
+import EditAssociationsDialog from "@/components/EditAssociationsDialog.vue";
 
 const { loadScenario, msdl } = useScenarioStore();
 
@@ -78,6 +79,7 @@ async function onDrop(files: File[] | null) {
     </main>
 
     <LoadFromUrlDialog v-model:open="dialogStore.isUrlDialogOpen" @loaded="loadScenario" />
+    <EditAssociationsDialog v-model:open="dialogStore.isAssociationDialogOpen" />
     <DropZoneIndicator v-if="isOverDropZone" />
     <GlobalEvents
       :filter="inputEventFilter"

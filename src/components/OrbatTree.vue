@@ -17,8 +17,6 @@ function getChildren(item: any) {
 function onSelect(item: any) {
   selectStore.activeItem = item.value;
 }
-
-console.log(props.side);
 </script>
 <template>
   <TreeRoot

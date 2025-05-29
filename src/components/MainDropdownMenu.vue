@@ -53,6 +53,15 @@ const dialogStore = useDialogStore();
         </DropdownMenuSubContent>
       </DropdownMenuSub>
       <DropdownMenuSub>
+        <DropdownMenuSubTrigger>Scenario</DropdownMenuSubTrigger>
+        <DropdownMenuSubContent>
+          <DropdownMenuItem @click="dialogStore.toggleAssociationDialog()"
+            >Side associations ...</DropdownMenuItem
+          >
+        </DropdownMenuSubContent>
+      </DropdownMenuSub>
+      <DropdownMenuSeparator />
+      <DropdownMenuSub>
         <DropdownMenuSubTrigger :disabled="!msdl">Map debugging</DropdownMenuSubTrigger>
         <DropdownMenuSubContent>
           <DropdownMenuCheckboxItem v-model="store.showIconAnchors" @select.prevent
@@ -72,7 +81,6 @@ const dialogStore = useDialogStore();
           >
         </DropdownMenuSubContent>
       </DropdownMenuSub>
-      <DropdownMenuSeparator />
       <DropdownMenuSub>
         <DropdownMenuSubTrigger>About</DropdownMenuSubTrigger>
         <DropdownMenuSubContent>

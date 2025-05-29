@@ -9,7 +9,7 @@ import {
   CommandSeparator,
 } from "@/components/ui/command";
 
-import { Download, Upload } from "lucide-vue-next";
+import { Download, Upload, Grid3x3Icon } from "lucide-vue-next";
 import { type ScenarioAction, useScenarioActions } from "@/composables/scenarioActions.ts";
 
 const open = defineModel<boolean>("open", { default: false });
@@ -42,6 +42,10 @@ function dispatchAction(action: ScenarioAction) {
         <CommandItem value="LOAD_FROM_URL" @select="dispatchAction('LoadFromUrl')">
           <Upload />
           <span>Load MSDL from URL ...</span>
+        </CommandItem>
+        <CommandItem value="EDIT_ASSOCIATIONS" @select="dispatchAction('EditAssociations')">
+          <Grid3x3Icon />
+          <span>Show Associations</span>
         </CommandItem>
       </CommandGroup>
       <CommandSeparator />

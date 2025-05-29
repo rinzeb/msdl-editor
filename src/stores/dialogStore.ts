@@ -3,5 +3,6 @@ import { useToggle } from "@vueuse/core";
 
 export const useDialogStore = defineStore("dialogStore", () => {
   const [isUrlDialogOpen, toggleUrlDialog] = useToggle(false);
-  return { isUrlDialogOpen, toggleUrlDialog };
+  const [isAssociationDialogOpen, toggleAssociationDialog] = useToggle(false);
+  return { isUrlDialogOpen, toggleUrlDialog, isAssociationDialogOpen, toggleAssociationDialog };
 });

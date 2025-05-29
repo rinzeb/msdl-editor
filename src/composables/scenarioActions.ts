@@ -2,7 +2,12 @@ import { downloadAsKMZ, downloadAsMSDL, loadMSDLFromFile } from "@/lib/io.ts";
 import { useScenarioStore } from "@/stores/scanarioStore.ts";
 import { toast } from "vue-sonner";
 import { useDialogStore } from "@/stores/dialogStore.ts";
-export type ScenarioAction = "LoadMSDLFromFile" | "DownloadMSDL" | "ExportKML" | "LoadFromUrl";
+export type ScenarioAction =
+  | "LoadMSDLFromFile"
+  | "DownloadMSDL"
+  | "ExportKML"
+  | "LoadFromUrl"
+  | "EditAssociations";
 
 export function useScenarioActions() {
   const { msdl, loadScenario } = useScenarioStore();
@@ -41,6 +46,9 @@ export function useScenarioActions() {
         break;
       case "LoadFromUrl":
         dialogStore.isUrlDialogOpen = true;
+        break;
+      case "EditAssociations":
+        dialogStore.isAssociationDialogOpen = true;
         break;
       default:
         console.error(`Unknown action: ${action}`);
