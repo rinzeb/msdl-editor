@@ -46,8 +46,8 @@ const toggleSide = (id: string) => {
 <template>
   <Accordion type="multiple" class="">
     <AccordionItem v-for="side in sides" :key="side.objectHandle" :value="side.objectHandle">
-      <AccordionTrigger
-        ><div class="flex items-center gap-2">
+      <AccordionTrigger class="bg-accent/50 py-1 rounded-none px-4"
+        ><div class="flex items-center gap-2 h-9">
           <span class="font-medium">{{ side.name }}</span
           ><Badge v-if="side === msdl?.primarySide">Primary</Badge>
         </div>
@@ -67,12 +67,26 @@ const toggleSide = (id: string) => {
         </template>
       </AccordionTrigger>
       <AccordionContent>
-        <OrbatTree :side="side" />
+        <template v-if="side.forces.length > 0">
+          <div v-for="force in side.forces" :key="force.objectHandle" class="my-2">
+            <div class="flex items-center justify-between pr-4">
+              <h4 class="text-sm ml-4">{{ force.name }}</h4>
+              <div class="gap-1 flex items-center">
+                <Badge v-if="force.militaryService" variant="secondary">{{
+                  force.militaryService
+                }}</Badge>
+                <Badge v-if="force.countryCode" variant="secondary">{{ force.countryCode }}</Badge>
+              </div>
+            </div>
+            <OrbatTree :side="force" :key="msdl?.primarySide?.objectHandle" />
+          </div>
+        </template>
+        <OrbatTree v-else :side="side" :key="msdl?.primarySide?.objectHandle" />
       </AccordionContent>
     </AccordionItem>
   </Accordion>
   <div v-if="msdl">
-    <div class="mt-4">
+    <div class="m-4">
       <Button variant="secondary" @click="toggleLayers()">Toggle layers visibility</Button>
     </div>
   </div>

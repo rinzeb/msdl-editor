@@ -25,15 +25,15 @@ const uiStore = useUIStore();
         </TabsList>
         <CloseButton @click="uiStore.toggleLeftPanel()" />
       </header>
-      <ScrollArea class="flex-auto px-4 pb-8 overflow-auto">
+      <ScrollArea class="flex-auto pb-8 overflow-auto">
         <TabsContent value="orbat">
           <SidePanel />
         </TabsContent>
         <TabsContent value="mapdisplay">
-          <PanelMapDisplay class="mt-6" />
+          <PanelMapDisplay class="mt-6 px-4" />
         </TabsContent>
         <TabsContent value="scenarioInfo">
-          <PaneScenarioInfo />
+          <PaneScenarioInfo class="px-4" />
         </TabsContent>
       </ScrollArea>
     </Tabs>
