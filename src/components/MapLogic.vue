@@ -91,6 +91,14 @@ watch(
   },
 );
 
+watch(
+  () => store.showSymbolOutline,
+  () => {
+    const mlMap = props.mlMap;
+    mlMap.listImages().forEach((i) => mlMap.removeImage(i));
+  },
+);
+
 function addSidesToMap(map: MlMap) {
   const featureCollection = combineSidesToJson(sides.value);
   map.addSource("sides", {
@@ -103,7 +111,7 @@ function addSidesToMap(map: MlMap) {
   } catch {}
 
   map.on("styleimagemissing", function (e) {
-    const symb = new ms.Symbol(e.id, { size: 20 });
+    const symb = new ms.Symbol(e.id, { size: 20, outlineWidth: store.showSymbolOutline ? 7 : 0 });
     const { width, height } = symb.getSize();
     const data = symb
       .asCanvas(2)

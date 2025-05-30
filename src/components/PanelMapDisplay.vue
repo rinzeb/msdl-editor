@@ -11,6 +11,7 @@ const layerStore = useLayerStore();
       <SwitchLabel v-model="layerStore.showUnits">Show units</SwitchLabel>
       <SwitchLabel v-model="layerStore.showEquipment">Show equipment</SwitchLabel>
       <SwitchLabel v-model="layerStore.showLabels">Show labels</SwitchLabel>
+      <SwitchLabel v-model="layerStore.showSymbolOutline">Show symbol outline</SwitchLabel>
     </div>
   </div>
 </template>

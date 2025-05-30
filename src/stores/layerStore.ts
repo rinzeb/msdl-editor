@@ -8,6 +8,7 @@ export const useLayerStore = defineStore("visibleLayers", () => {
   const showUnits = ref(true);
   const showEquipment = ref(true);
   const showLabels = ref(false);
+  const showSymbolOutline = ref(true);
 
   function setSideLayers(scenario: MilitaryScenario) {
     layers.value.clear();
@@ -16,7 +17,15 @@ export const useLayerStore = defineStore("visibleLayers", () => {
     });
   }
 
-  return { layers, showIconAnchors, showUnits, showEquipment, showLabels, setSideLayers };
+  return {
+    layers,
+    showIconAnchors,
+    showUnits,
+    showEquipment,
+    showLabels,
+    setSideLayers,
+    showSymbolOutline,
+  };
 });
 
 export const useMapSettingsStore = defineStore("mapSettings", () => {
