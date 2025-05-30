@@ -15,13 +15,22 @@ import { computed } from "vue";
 import { sortBy } from "@/utils.ts";
 import { Button } from "@/components/ui/button";
 import { useScenarioStore } from "@/stores/scanarioStore.ts";
+import SidePanelDropdown from "@/components/SidePanelDropdown.vue";
+import { useSideStore } from "@/stores/uiStore.ts";
 
 const { msdl } = useScenarioStore();
 
 const layerStore = useLayerStore();
+const sideStore = useSideStore();
 
 const sides = computed(() => {
-  return sortBy(msdl.value?.sides ?? [], "name").filter((side) => side.rootUnits.length > 0);
+  if (sideStore.hideEmptySides) {
+    return sortBy(
+      msdl.value?.sides.filter((side) => side.rootUnits.length > 0) ?? [],
+      "name",
+    ).filter((side) => side.rootUnits.length > 0);
+  }
+  return sortBy(msdl.value?.sides ?? [], "name");
 });
 
 function toggleLayers() {
@@ -44,7 +53,11 @@ const toggleSide = (id: string) => {
 </script>
 
 <template>
-  <Accordion type="multiple" class="">
+  <header class="flex items-center justify-between px-4 mt-1">
+    <h3 class="text-xs/6 font-semibold uppercase">Sides</h3>
+    <SidePanelDropdown @toggleVisibility="toggleLayers" />
+  </header>
+  <Accordion type="multiple" class="mt-2">
     <AccordionItem v-for="side in sides" :key="side.objectHandle" :value="side.objectHandle">
       <AccordionTrigger class="bg-accent/50 py-1 rounded-none px-4"
         ><div class="flex items-center gap-2 h-9">
