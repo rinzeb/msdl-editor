@@ -42,7 +42,7 @@ function isUnit(item: Unit | EquipmentItem): item is Unit {
 </script>
 
 <template>
-  <Card class="text-sm bg-card/90 backdrop-blur-lg relative min-w-[200px]">
+  <Card class="text-sm bg-sidebar/90 backdrop-blur-lg relative min-w-[200px]">
     <header class="p-4 mt-2 h-10 flex justify-between">
       <div class="flex gap-2">
         <MilSymbol :sidc="item.sidc" :key="item.sidc" :size="16" />

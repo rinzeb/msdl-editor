@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import maplibregl, { GeoJSONSource, Map as MlMap, type Subscription } from "maplibre-gl";
+import { GeoJSONSource, Map as MlMap, type Subscription } from "maplibre-gl";
 import { centroid } from "@turf/centroid";
 import ms from "milsymbol";
 import { computed, onUnmounted, ref, watch, watchEffect } from "vue";
@@ -149,20 +149,6 @@ function addSidesToMap(map: MlMap) {
     if (e.features[0].geometry.type !== "Point") {
       return;
     }
-    const coordinates = e.features[0].geometry.coordinates.slice();
-    const labels = e.features.map((f) => f.properties.label).join(", ");
-
-    // Ensure that if the map is zoomed out such that multiple
-    // copies of the feature are visible, the popup appears
-    // over the copy being pointed to.
-    while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-      coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-    }
-
-    new maplibregl.Popup({ className: "text-black" })
-      .setLngLat(coordinates as [number, number])
-      .setText(labels)
-      .addTo(map);
 
     const activeItemId = e.features[0].properties.id as string;
     if (!activeItemId) return;

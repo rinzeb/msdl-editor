@@ -59,7 +59,7 @@ const toggleSide = (id: string) => {
   </header>
   <Accordion type="multiple" class="mt-2">
     <AccordionItem v-for="side in sides" :key="side.objectHandle" :value="side.objectHandle">
-      <AccordionTrigger class="bg-accent/50 py-1 rounded-none px-4"
+      <AccordionTrigger class="bg-card-foreground/5 py-1 rounded-none px-4"
         ><div class="flex items-center gap-2 h-9">
           <span class="font-medium">{{ side.name }}</span
           ><Badge v-if="side === msdl?.primarySide">Primary</Badge>

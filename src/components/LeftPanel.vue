@@ -14,7 +14,7 @@ const uiStore = useUIStore();
 <template>
   <aside
     v-if="uiStore.showLeftPanel"
-    class="h-full max-h-[90vh] w-96 bg-card/95 pointer-events-auto border rounded-md relative"
+    class="h-full max-h-[90vh] w-96 bg-sidebar/95 backdrop-blur-sm pointer-events-auto border rounded-md relative"
   >
     <Tabs default-value="orbat" class="flex flex-col h-full">
       <header class="flex-0 flex items-center justify-between w-full gap-2 p-2">
