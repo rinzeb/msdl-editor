@@ -43,7 +43,7 @@ function isUnit(item: Unit | EquipmentItem): item is Unit {
 
 <template>
   <Card class="text-sm bg-card/90 backdrop-blur-lg relative min-w-[200px]">
-    <header class="p-4 mt-4 h-20 flex justify-between">
+    <header class="p-4 mt-2 h-10 flex justify-between">
       <div class="flex gap-2">
         <MilSymbol :sidc="item.sidc" :key="item.sidc" :size="16" />
         <span class="text-base font-bold">{{ item.label }}</span>
@@ -53,10 +53,11 @@ function isUnit(item: Unit | EquipmentItem): item is Unit {
       </div>
     </header>
     <Tabs default-value="info" class="">
-      <TabsList class="grid w-full grid-cols-3">
+      <TabsList class="w-full flex">
         <TabsTrigger value="info">Info</TabsTrigger>
         <TabsTrigger v-if="isUnit(item)" value="equipment"
-          >Equipment <Badge>{{ item.equipment.length }}</Badge>
+          >Equipment
+          <Badge class="ml-2 px-1 py-0 text-xs rounded-full">{{ item.equipment.length }}</Badge>
         </TabsTrigger>
         <TabsTrigger value="xml">XML</TabsTrigger>
       </TabsList>

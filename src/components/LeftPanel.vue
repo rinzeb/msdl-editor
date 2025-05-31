@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ChevronsRight } from "lucide-vue-next";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabsmod";
 import SidePanel from "@/components/SidePanel.vue";
 import { useUIStore } from "@/stores/uiStore.ts";
 import CloseButton from "@/components/CloseButton.vue";
@@ -18,7 +18,7 @@ const uiStore = useUIStore();
   >
     <Tabs default-value="orbat" class="flex flex-col h-full">
       <header class="flex-0 flex items-center justify-between w-full gap-2 p-2">
-        <TabsList class="grid flex-auto grid-cols-3">
+        <TabsList class="w-full">
           <TabsTrigger value="orbat">ORBAT</TabsTrigger>
           <TabsTrigger value="mapdisplay">Map display</TabsTrigger>
           <TabsTrigger value="scenarioInfo">Info</TabsTrigger>
