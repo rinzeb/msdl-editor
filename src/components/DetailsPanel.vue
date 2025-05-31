@@ -25,6 +25,7 @@ const prettyXML = computed(() => {
     useSelfClosingElement: true,
   });
 });
+
 const typeLabel = computed(() => {
   if (props.item instanceof Unit) {
     return "Unit";
@@ -34,6 +35,10 @@ const typeLabel = computed(() => {
   }
   return "Item";
 });
+
+function isUnit(item: Unit | EquipmentItem): item is Unit {
+  return item instanceof Unit;
+}
 </script>
 
 <template>
@@ -48,16 +53,31 @@ const typeLabel = computed(() => {
       </div>
     </header>
     <Tabs default-value="info" class="">
-      <TabsList class="grid w-full grid-cols-2">
+      <TabsList class="grid w-full grid-cols-3">
         <TabsTrigger value="info">Info</TabsTrigger>
+        <TabsTrigger v-if="isUnit(item)" value="equipment"
+          >Equipment <Badge>{{ item.equipment.length }}</Badge>
+        </TabsTrigger>
         <TabsTrigger value="xml">XML</TabsTrigger>
       </TabsList>
       <ScrollArea class="">
-        <div class="max-h-[60vh] min-w-96">
+        <div class="max-h-[50vh] min-w-96">
           <TabsContent value="info" class="p-4">
             <Button :disabled="!item.location" @click="emit('flyTo', item)" variant="outline"
               >Fly to</Button
             >
+          </TabsContent>
+          <TabsContent v-if="isUnit(item)" value="equipment" class="p-4">
+            <ul class="list-disc pl-4">
+              <li
+                v-for="eq in item.equipment"
+                :key="eq.objectHandle"
+                class="flex items-center gap-2"
+              >
+                <MilSymbol :sidc="eq.sidc" :size="16" />
+                <Button variant="link" size="sm" @click="emit('flyTo', eq)">{{ eq.label }}</Button>
+              </li>
+            </ul>
           </TabsContent>
           <TabsContent value="xml"
             ><div class="max-w-[40vw]">

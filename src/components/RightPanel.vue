@@ -12,7 +12,7 @@ const selectStore = useSelectStore();
 function flyToItem(item: EquipmentItem | Unit) {
   const coordinates = item.location as LngLatLike;
   if (!coordinates) return;
-  mlMap?.flyTo({ center: coordinates, zoom: 10 });
+  mlMap?.flyTo({ center: coordinates, zoom: 16 });
 }
 </script>
 <template>
