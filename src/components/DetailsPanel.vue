@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Card } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabsmod";
 import { Button } from "@/components/ui/button";
 import { EquipmentItem, Unit } from "@orbat-mapper/msdllib";
 import XmlBeautify from "xml-beautify";
