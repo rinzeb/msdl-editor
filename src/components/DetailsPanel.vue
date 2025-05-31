@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { FocusIcon, ArrowUpIcon } from "lucide-vue-next";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabsmod";
 import { Button } from "@/components/ui/button";
@@ -10,12 +11,15 @@ import MilSymbol from "@/components/MilSymbol.vue";
 import { computed } from "vue";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
+import { useScenarioStore } from "@/stores/scanarioStore.ts";
 
 const props = defineProps<{
   item: Unit | EquipmentItem;
 }>();
 
 const emit = defineEmits(["flyTo"]);
+
+const { msdl } = useScenarioStore();
 
 const selectStore = useSelectStore();
 
@@ -39,11 +43,19 @@ const typeLabel = computed(() => {
 function isUnit(item: Unit | EquipmentItem): item is Unit {
   return item instanceof Unit;
 }
+
+function goUp() {
+  const parentItem =
+    msdl.value?.getUnitById(props.item.superiorHandle) ??
+    msdl.value?.getEquipmentById(props.item.superiorHandle);
+  if (!parentItem) return;
+  selectStore.activeItem = parentItem;
+}
 </script>
 
 <template>
-  <Card class="text-sm bg-sidebar/90 backdrop-blur-lg relative min-w-[200px]">
-    <header class="p-4 mt-2 h-10 flex justify-between">
+  <Card class="text-sm bg-sidebar/90 gap-0 backdrop-blur-lg relative min-w-[200px]">
+    <header class="px-4 h-10 mt-4 flex justify-between">
       <div class="flex gap-2">
         <MilSymbol :sidc="item.sidc" :key="item.sidc" :size="16" />
         <span class="text-base font-bold">{{ item.label }}</span>
@@ -52,7 +64,15 @@ function isUnit(item: Unit | EquipmentItem): item is Unit {
         <Badge>{{ typeLabel }}</Badge>
       </div>
     </header>
-    <Tabs default-value="info" class="">
+    <div class="flex items-center pl-2 py-1 border-b border-muted-foreground/20">
+      <Button variant="ghost" size="icon" @click="emit('flyTo', item)" title="Zoom to item"
+        ><FocusIcon
+      /></Button>
+      <Button variant="ghost" size="icon" @click="goUp" title="Go to parent"
+        ><ArrowUpIcon
+      /></Button>
+    </div>
+    <Tabs default-value="info" class="mt-0">
       <TabsList class="w-full flex">
         <TabsTrigger value="info">Info</TabsTrigger>
         <TabsTrigger v-if="isUnit(item)" value="equipment"
