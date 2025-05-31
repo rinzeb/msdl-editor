@@ -100,7 +100,10 @@ watch(
 );
 
 function addSidesToMap(map: MlMap) {
-  const featureCollection = combineSidesToJson(sides.value);
+  const featureCollection = combineSidesToJson(sides.value, {
+    includeUnits: store.showUnits,
+    includeEquipment: store.showEquipment,
+  });
   map.addSource("sides", {
     type: "geojson",
     data: featureCollection as never,
