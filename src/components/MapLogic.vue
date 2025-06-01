@@ -93,8 +93,19 @@ watch(
 
 watch([() => store.showSymbolOutline, () => store.symbolSize], () => {
   const mlMap = props.mlMap;
-  mlMap.listImages().forEach((i) => mlMap.removeImage(i));
+  mlMap
+    .listImages()
+    .filter(checkIfSymbolCode)
+    .forEach((i) => {
+      console.log("image", i);
+      mlMap.removeImage(i);
+    });
 });
+
+function checkIfSymbolCode(id: string) {
+  // chat that id is all uppercase or numbers. '-' and '*' are allowed
+  return /^[A-Z0-9\-*]+$/.test(id);
+}
 
 function addSidesToMap(map: MlMap) {
   const featureCollection = combineSidesToJson(sides.value, {
