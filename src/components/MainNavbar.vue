@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { useDark, useToggle } from "@vueuse/core";
 import { loadMSDLFromFile } from "@/lib/io.ts";
 import { useScenarioStore } from "@/stores/scanarioStore.ts";
+import EditableLabel from "@/components/EditableLabel.vue";
+import { computed, triggerRef } from "vue";
 
 const { msdl, loadScenario } = useScenarioStore();
 
@@ -19,12 +21,24 @@ async function doLoading() {
     console.error(e);
   }
 }
+
+const scenarioName = computed({
+  get: () => msdl.value?.scenarioId.name || "No title",
+  set: (value) => {
+    if (msdl.value) {
+      msdl.value.scenarioId.name = value;
+      triggerRef(msdl);
+    }
+  },
+});
 </script>
 <template>
   <nav class="flex items-center justify-between p-1 border-b">
     <div class="pl-2 flex items-center gap-2">
       <MainDropdownMenu />
-      <div v-if="msdl">{{ msdl.scenarioId.name || "No title" }}</div>
+      <div v-if="msdl">
+        <EditableLabel v-model="scenarioName" />
+      </div>
       <Button v-else variant="outline" @click="doLoading">Load scenario</Button>
     </div>
 

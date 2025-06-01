@@ -11,7 +11,7 @@ const dialogStore = useDialogStore();
     <h4 class="text-sm font-bold mt-2">Scenario info</h4>
 
     <p>Name: {{ msdl.scenarioId.name }}</p>
-    <p>Description: {{ msdl.scenarioId.name }}</p>
+    <p>Description: {{ msdl.scenarioId.description }}</p>
     <p>Security classification: {{ msdl.scenarioId.securityClassification }}</p>
 
     <Button variant="outline" class="mt-2" @click="dialogStore.toggleAssociationDialog()"
