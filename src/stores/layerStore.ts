@@ -10,6 +10,7 @@ export const useLayerStore = defineStore("visibleLayers", () => {
   const showEquipment = useLocalStorage("showEquipment", true);
   const showLabels = useLocalStorage("showLabels", true);
   const showSymbolOutline = useLocalStorage("showSymbolOutline", true);
+  const symbolSize = useLocalStorage("symbolSize", 20);
 
   function setSideLayers(scenario: MilitaryScenario) {
     layers.value.clear();
@@ -26,6 +27,7 @@ export const useLayerStore = defineStore("visibleLayers", () => {
     showLabels,
     setSideLayers,
     showSymbolOutline,
+    symbolSize,
   };
 });
 
