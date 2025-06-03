@@ -7,7 +7,7 @@ import { useUIStore } from "@/stores/uiStore.ts";
 import CloseButton from "@/components/CloseButton.vue";
 import { Button } from "@/components/ui/button";
 import PanelMapDisplay from "@/components/PanelMapDisplay.vue";
-import PaneScenarioInfo from "@/components/PaneScenarioInfo.vue";
+import PanelScenarioInfo from "@/components/PanelScenarioInfo.vue";
 
 const uiStore = useUIStore();
 </script>
@@ -33,7 +33,7 @@ const uiStore = useUIStore();
           <PanelMapDisplay class="mt-6 px-4" />
         </TabsContent>
         <TabsContent value="scenarioInfo">
-          <PaneScenarioInfo class="px-4" />
+          <PanelScenarioInfo class="px-4" />
         </TabsContent>
       </ScrollArea>
     </Tabs>
