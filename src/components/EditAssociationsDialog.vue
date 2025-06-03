@@ -17,11 +17,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { computed, ref } from "vue";
+import { useSideStore } from "@/stores/uiStore.ts";
+import SwitchLabel from "@/components/SwitchLabel.vue";
+import { sortBy } from "@/utils.ts";
 
 const open = defineModel<boolean>("open", { required: true });
 
 const { msdl } = useScenarioStore();
-
+const sideStore = useSideStore();
 const currentRow = ref(-1);
 const currentColumn = ref(-1);
 
@@ -33,6 +36,16 @@ const associationMap = computed((): Record<string, Record<string, string>> => {
       Object.fromEntries(forceSide.associations.map((a) => [a.affiliateHandle, a.relationship])),
     ]),
   );
+});
+
+const sides = computed(() => {
+  if (sideStore.hideEmptySides) {
+    return sortBy(
+      msdl.value?.sides.filter((side) => side.rootUnits.length > 0) ?? [],
+      "name",
+    ).filter((side) => side.rootUnits.length > 0);
+  }
+  return sortBy(msdl.value?.sides ?? [], "name");
 });
 
 function setCurrentRowAndColumn(event: PointerEvent) {
@@ -63,7 +76,7 @@ function setCurrentRowAndColumn(event: PointerEvent) {
               >Force/Side</TableHead
             >
             <TableCell
-              v-for="(forceSide, columnIndex) in msdl.sides"
+              v-for="(forceSide, columnIndex) in sides"
               :key="forceSide.objectHandle"
               class="font-medium sticky top-0 bg-background backdrop-blur-sm"
               :data-column="columnIndex + 1"
@@ -74,7 +87,7 @@ function setCurrentRowAndColumn(event: PointerEvent) {
         </TableHeader>
         <TableBody @pointerover="setCurrentRowAndColumn" @pointerleave="setCurrentRowAndColumn">
           <TableRow
-            v-for="(forceSide, rowIndex) in msdl.sides"
+            v-for="(forceSide, rowIndex) in sides"
             :key="forceSide.objectHandle"
             :data-row="rowIndex"
           >
@@ -97,7 +110,9 @@ function setCurrentRowAndColumn(event: PointerEvent) {
         </TableBody>
       </Table>
 
-      <DialogFooter> </DialogFooter>
+      <DialogFooter>
+        <SwitchLabel v-model="sideStore.hideEmptySides">Hide empty sides</SwitchLabel></DialogFooter
+      >
     </DialogContent>
   </Dialog>
 </template>
