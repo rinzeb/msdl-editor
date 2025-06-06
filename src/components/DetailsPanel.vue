@@ -12,6 +12,7 @@ import { computed } from "vue";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { useScenarioStore } from "@/stores/scanarioStore.ts";
+import UnitModelPanel from "@/components/UnitModelPanel.vue";
 
 const props = defineProps<{
   item: Unit | EquipmentItem;
@@ -79,6 +80,7 @@ function goUp() {
           >Equipment
           <Badge class="ml-2 px-1 py-0 text-xs rounded-full">{{ item.equipment.length }}</Badge>
         </TabsTrigger>
+        <TabsTrigger value="model">Model</TabsTrigger>
         <TabsTrigger value="xml">XML</TabsTrigger>
       </TabsList>
       <ScrollArea class="">
@@ -109,6 +111,14 @@ function goUp() {
               </div>
             </div></TabsContent
           >
+          <TabsContent v-if="isUnit(item)" value="model">
+            <div class="max-w-[40vw]">
+              <div class="bg-muted p-2 overflow-auto">
+                <UnitModelPanel :unit="item">
+                </UnitModelPanel>
+              </div>
+            </div>
+          </TabsContent>
         </div>
       </ScrollArea>
     </Tabs>
