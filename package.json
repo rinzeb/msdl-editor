@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@atlaskit/pragmatic-drag-and-drop": "~1.6.1",
-    "@orbat-mapper/msdllib": "^0.11.0",
+    "@orbat-mapper/msdllib": "^0.12.1",
     "@siso-entity-type/lib": "^0.2.1",
     "@tanstack/vue-table": "^8.21.3",
     "@tmcw/togeojson": "^7.1.1",
