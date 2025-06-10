@@ -13,6 +13,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { useScenarioStore } from "@/stores/scanarioStore.ts";
 import UnitModelPanel from "@/components/UnitModelPanel.vue";
+import EquipmentItemModelPanel from "@/components/EquipmentItemModelPanel.vue";
 
 const props = defineProps<{
   item: Unit | EquipmentItem;
@@ -43,6 +44,10 @@ const typeLabel = computed(() => {
 
 function isUnit(item: Unit | EquipmentItem): item is Unit {
   return item instanceof Unit;
+}
+
+function isEquipmentItem(item: Unit | EquipmentItem): item is EquipmentItem {
+  return item instanceof EquipmentItem;
 }
 
 function goUp() {
@@ -114,8 +119,14 @@ function goUp() {
           <TabsContent v-if="isUnit(item)" value="model">
             <div class="max-w-[40vw]">
               <div class="bg-muted p-2 overflow-auto">
-                <UnitModelPanel :unit="item">
-                </UnitModelPanel>
+                <UnitModelPanel :unit="item"> </UnitModelPanel>
+              </div>
+            </div>
+          </TabsContent>
+          <TabsContent v-if="isEquipmentItem(item)" value="model">
+            <div class="max-w-[40vw]">
+              <div class="bg-muted p-2 overflow-auto">
+                <EquipmentItemModelPanel :equipment="item"> </EquipmentItemModelPanel>
               </div>
             </div>
           </TabsContent>

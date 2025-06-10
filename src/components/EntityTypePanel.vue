@@ -14,6 +14,7 @@ const props = defineProps<{
 const sisoEntityType = computed(() =>
   props.entityType ? SisoEnum.fromString(props.entityType) : null,
 );
+
 </script>
 <template>
   <div v-if="sisoEntityType">
