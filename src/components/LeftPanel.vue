@@ -8,8 +8,11 @@ import CloseButton from "@/components/CloseButton.vue";
 import { Button } from "@/components/ui/button";
 import PanelMapDisplay from "@/components/PanelMapDisplay.vue";
 import PanelScenarioInfo from "@/components/PanelScenarioInfo.vue";
+import { useScenarioStore } from "@/stores/scanarioStore.ts";
+import PanelScenarioDeployment from "@/components/PanelScenarioDeployment.vue";
 
 const uiStore = useUIStore();
+const { msdl } = useScenarioStore();
 </script>
 <template>
   <aside
@@ -20,8 +23,9 @@ const uiStore = useUIStore();
       <header class="flex-0 flex items-center justify-between w-full gap-2 p-2">
         <TabsList class="w-full">
           <TabsTrigger value="orbat">ORBAT</TabsTrigger>
-          <TabsTrigger value="mapdisplay">Map display</TabsTrigger>
+          <TabsTrigger value="mapdisplay">Display</TabsTrigger>
           <TabsTrigger value="scenarioInfo">Info</TabsTrigger>
+          <TabsTrigger v-if="msdl?.isNETN" value="deployment">Deployment</TabsTrigger>
         </TabsList>
         <CloseButton @click="uiStore.toggleLeftPanel()" />
       </header>
@@ -34,6 +38,9 @@ const uiStore = useUIStore();
         </TabsContent>
         <TabsContent value="scenarioInfo">
           <PanelScenarioInfo class="px-4" />
+        </TabsContent>
+        <TabsContent v-if="msdl?.isNETN" value="deployment">
+          <PanelScenarioDeployment />
         </TabsContent>
       </ScrollArea>
     </Tabs>
