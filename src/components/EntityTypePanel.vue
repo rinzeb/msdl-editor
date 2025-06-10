@@ -15,25 +15,40 @@ const sisoEntityType = computed(() =>
   props.entityType ? SisoEnum.fromString(props.entityType) : null,
 );
 
+const entityTypeFields = computed(() => {
+  if (!sisoEntityType.value) return [];
+  return [
+    { label: "Kind", value: sisoEnums.value.getKindName(sisoEntityType.value) },
+    { label: "Domain", value: sisoEnums.value.getDomainName(sisoEntityType.value) },
+    { label: "Country", value: sisoEnums.value.getCountryName(sisoEntityType.value) },
+    { label: "Category", value: sisoEnums.value.getCategoryName(sisoEntityType.value) },
+    { label: "Subcategory", value: sisoEnums.value.getSubcategoryName(sisoEntityType.value) },
+    { label: "Specific", value: sisoEnums.value.getSpecificName(sisoEntityType.value) },
+    { label: "Extra", value: sisoEnums.value.getExtraName(sisoEntityType.value) },
+  ];
+});
+
+// Filter out subsequent fields that are the same as the previous, e.g. specific == extra
+const uniqueEntityTypeFields = computed(() => {
+  return entityTypeFields.value.reduce(
+    (acc, field) => {
+      if (acc.length === 0 || acc[acc.length - 1].value !== field.value) {
+        acc.push(field);
+      }
+      return acc;
+    },
+    [] as { label: string; value: string }[],
+  );
+});
 </script>
 <template>
   <div v-if="sisoEntityType">
     <h4 class="text-sm font-bold mt-2">Entity type: {{ props.entityType || "Unknown" }}</h4>
     <PanelDataGrid class="mt-4" v-if="sisoEntityType">
-      <span class="font-semibold">Kind</span>
-      <span>{{ sisoEnums.getKindName(sisoEntityType) }}</span>
-      <span class="font-semibold">Domain</span>
-      <span>{{ sisoEnums.getDomainName(sisoEntityType) }}</span>
-      <span class="font-semibold">Country</span>
-      <span>{{ sisoEnums.getCountryName(sisoEntityType) }}</span>
-      <span class="font-semibold">Category</span>
-      <span>{{ sisoEnums.getCategoryName(sisoEntityType) }}</span>
-      <span class="font-semibold">Subcategory</span>
-      <span>{{ sisoEnums.getSubcategoryName(sisoEntityType) }}</span>
-      <span class="font-semibold">Specific</span>
-      <span>{{ sisoEnums.getSpecificName(sisoEntityType) }}</span>
-      <span class="font-semibold">Extra</span>
-      <span>{{ sisoEnums.getExtraName(sisoEntityType) }}</span>
+      <template v-for="(field, index) in uniqueEntityTypeFields" :key="index">
+        <span class="font-semibold">{{ field.label }}</span>
+        <span>{{ field.value }}</span>
+      </template>
     </PanelDataGrid>
     <PanelDataGrid class="mt-4" v-else>
       <span class="font-semibold">No entitytype provided</span>

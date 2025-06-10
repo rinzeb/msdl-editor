@@ -14,6 +14,7 @@ const equipmentModel = computed(() => props.equipment?.model ?? null);
     <h4 class="text-sm font-bold mt-2">EquipmentItem Model</h4>
     <EntityTypePanel v-if="equipmentModel?.entityType" :entity-type="equipmentModel.entityType">
     </EntityTypePanel>
+    <span v-else>No entitytype provided</span>
   </div>
   <div v-else>
     <h4 class="text-sm font-bold mt-2">No equipment model provided</h4>
