@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { FocusIcon, ArrowUpIcon } from "lucide-vue-next";
+import { ArrowUpIcon, FocusIcon } from "lucide-vue-next";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabsmod";
 import { Button } from "@/components/ui/button";
 import { EquipmentItem, Unit } from "@orbat-mapper/msdllib";
-import XmlBeautify from "xml-beautify";
 import CloseButton from "@/components/CloseButton.vue";
 import { useSelectStore } from "@/stores/selectStore.ts";
 import MilSymbol from "@/components/MilSymbol.vue";
@@ -12,6 +11,8 @@ import { computed } from "vue";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { useScenarioStore } from "@/stores/scanarioStore.ts";
+import DetailsPanelHoldings from "@/components/DetailsPanelHoldings.vue";
+import ShowXMLDialog from "@/components/ShowXMLDialog.vue";
 import UnitModelPanel from "@/components/UnitModelPanel.vue";
 import EquipmentItemModelPanel from "@/components/EquipmentItemModelPanel.vue";
 
@@ -21,16 +22,9 @@ const props = defineProps<{
 
 const emit = defineEmits(["flyTo"]);
 
-const { msdl } = useScenarioStore();
+const { msdl, isNETN } = useScenarioStore();
 
 const selectStore = useSelectStore();
-
-const prettyXML = computed(() => {
-  return new XmlBeautify().beautify(props.item.element.outerHTML, {
-    indent: "  ",
-    useSelfClosingElement: true,
-  });
-});
 
 const typeLabel = computed(() => {
   if (props.item instanceof Unit) {
@@ -77,16 +71,22 @@ function goUp() {
       <Button variant="ghost" size="icon" @click="goUp" title="Go to parent"
         ><ArrowUpIcon
       /></Button>
+      <ShowXMLDialog :item="item">XML</ShowXMLDialog>
     </div>
     <Tabs default-value="info" class="mt-0">
       <TabsList class="w-full flex">
         <TabsTrigger value="info">Info</TabsTrigger>
         <TabsTrigger v-if="isUnit(item)" value="equipment"
           >Equipment
-          <Badge class="ml-2 px-1 py-0 text-xs rounded-full">{{ item.equipment.length }}</Badge>
+          <Badge class="px-1 py-0 text-xs rounded-full">{{ item.equipment.length }}</Badge>
         </TabsTrigger>
         <TabsTrigger value="model">Model</TabsTrigger>
-        <TabsTrigger value="xml">XML</TabsTrigger>
+        <TabsTrigger v-if="isNETN" value="holdings"
+          >Holdings
+          <Badge class="ml-0 px-1 py-0 text-xs rounded-full">{{
+            item.holdings.length
+          }}</Badge></TabsTrigger
+        >
       </TabsList>
       <ScrollArea class="">
         <div class="max-h-[50vh] min-w-96">
@@ -107,15 +107,9 @@ function goUp() {
               </li>
             </ul>
           </TabsContent>
-          <TabsContent value="xml"
-            ><div class="max-w-[40vw]">
-              <div class="bg-muted p-2 overflow-auto">
-                <code class="">
-                  <pre>{{ prettyXML }}</pre>
-                </code>
-              </div>
-            </div></TabsContent
-          >
+          <TabsContent v-if="isNETN" value="holdings" class="p-4">
+            <DetailsPanelHoldings :item="item" />
+          </TabsContent>
           <TabsContent v-if="isUnit(item)" value="model">
             <div class="max-w-[40vw]">
               <div class="bg-muted p-2 overflow-auto">
