@@ -1,4 +1,4 @@
-import { shallowRef } from "vue";
+import { computed, shallowRef } from "vue";
 import { MilitaryScenario } from "@orbat-mapper/msdllib";
 import { useLayerStore } from "@/stores/layerStore.ts";
 import { useSelectStore } from "@/stores/selectStore.ts";
@@ -20,5 +20,9 @@ export function useScenarioStore() {
     selectStore.clearActiveItem();
   }
 
-  return { loadScenario, clearScenario, msdl };
+  const isNETN = computed(() => {
+    return msdl.value?.isNETN ?? false;
+  });
+
+  return { loadScenario, clearScenario, msdl, isNETN };
 }

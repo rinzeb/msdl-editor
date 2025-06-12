@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { FocusIcon, ArrowUpIcon } from "lucide-vue-next";
+import { ArrowUpIcon, FocusIcon } from "lucide-vue-next";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabsmod";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,7 @@ import { computed } from "vue";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { useScenarioStore } from "@/stores/scanarioStore.ts";
+import DetailsPanelHoldings from "@/components/DetailsPanelHoldings.vue";
 
 const props = defineProps<{
   item: Unit | EquipmentItem;
@@ -19,7 +20,7 @@ const props = defineProps<{
 
 const emit = defineEmits(["flyTo"]);
 
-const { msdl } = useScenarioStore();
+const { msdl, isNETN } = useScenarioStore();
 
 const selectStore = useSelectStore();
 
@@ -77,8 +78,14 @@ function goUp() {
         <TabsTrigger value="info">Info</TabsTrigger>
         <TabsTrigger v-if="isUnit(item)" value="equipment"
           >Equipment
-          <Badge class="ml-2 px-1 py-0 text-xs rounded-full">{{ item.equipment.length }}</Badge>
+          <Badge class="px-1 py-0 text-xs rounded-full">{{ item.equipment.length }}</Badge>
         </TabsTrigger>
+        <TabsTrigger v-if="isNETN" value="holdings"
+          >Holdings
+          <Badge class="ml-0 px-1 py-0 text-xs rounded-full">{{
+            item.holdings.length
+          }}</Badge></TabsTrigger
+        >
         <TabsTrigger value="xml">XML</TabsTrigger>
       </TabsList>
       <ScrollArea class="">
@@ -99,6 +106,9 @@ function goUp() {
                 <Button variant="link" size="sm" @click="emit('flyTo', eq)">{{ eq.label }}</Button>
               </li>
             </ul>
+          </TabsContent>
+          <TabsContent v-if="isNETN" value="holdings" class="p-4">
+            <DetailsPanelHoldings :item="item" />
           </TabsContent>
           <TabsContent value="xml"
             ><div class="max-w-[40vw]">
