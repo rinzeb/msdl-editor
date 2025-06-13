@@ -10,11 +10,13 @@
     "build-only": "vite build",
     "type-check": "vue-tsc --build",
     "lint": "eslint . --fix",
-    "format": "prettier --write src/"
+    "format": "prettier --write src/",
+    "check-format": "prettier --check src/"
   },
   "dependencies": {
     "@atlaskit/pragmatic-drag-and-drop": "~1.6.1",
     "@orbat-mapper/msdllib": "^0.14.0",
+    "@siso-entity-type/lib": "^0.3.0",
     "@tanstack/vue-table": "^8.21.3",
     "@tmcw/togeojson": "^7.1.1",
     "@turf/centroid": "^7.2.0",

@@ -13,6 +13,8 @@ import { Badge } from "@/components/ui/badge";
 import { useScenarioStore } from "@/stores/scanarioStore.ts";
 import DetailsPanelHoldings from "@/components/DetailsPanelHoldings.vue";
 import ShowXMLDialog from "@/components/ShowXMLDialog.vue";
+import UnitModelPanel from "@/components/UnitModelPanel.vue";
+import EquipmentItemModelPanel from "@/components/EquipmentItemModelPanel.vue";
 
 const props = defineProps<{
   item: Unit | EquipmentItem;
@@ -36,6 +38,10 @@ const typeLabel = computed(() => {
 
 function isUnit(item: Unit | EquipmentItem): item is Unit {
   return item instanceof Unit;
+}
+
+function isEquipmentItem(item: Unit | EquipmentItem): item is EquipmentItem {
+  return item instanceof EquipmentItem;
 }
 
 function goUp() {
@@ -74,6 +80,7 @@ function goUp() {
           >Equipment
           <Badge class="px-1 py-0 text-xs rounded-full">{{ item.equipment.length }}</Badge>
         </TabsTrigger>
+        <TabsTrigger value="model">Model</TabsTrigger>
         <TabsTrigger v-if="isNETN" value="holdings"
           >Holdings
           <Badge class="ml-0 px-1 py-0 text-xs rounded-full">{{
@@ -102,6 +109,20 @@ function goUp() {
           </TabsContent>
           <TabsContent v-if="isNETN" value="holdings" class="p-4">
             <DetailsPanelHoldings :item="item" />
+          </TabsContent>
+          <TabsContent v-if="isUnit(item)" value="model">
+            <div class="max-w-[40vw]">
+              <div class="bg-muted p-2 overflow-auto">
+                <UnitModelPanel :unit="item"> </UnitModelPanel>
+              </div>
+            </div>
+          </TabsContent>
+          <TabsContent v-if="isEquipmentItem(item)" value="model">
+            <div class="max-w-[40vw]">
+              <div class="bg-muted p-2 overflow-auto">
+                <EquipmentItemModelPanel :equipment="item"> </EquipmentItemModelPanel>
+              </div>
+            </div>
           </TabsContent>
         </div>
       </ScrollArea>
