@@ -1,28 +1,54 @@
 <script setup lang="ts">
+import { PencilIcon } from "lucide-vue-next";
 import { useScenarioStore } from "@/stores/scanarioStore.ts";
 import { Button } from "@/components/ui/button";
 import { useDialogStore } from "@/stores/dialogStore.ts";
-import PanelDataGrid from "@/components/PanelDataGrid.vue";
 import { Badge } from "@/components/ui/badge";
 import ShowXMLDialog from "@/components/ShowXMLDialog.vue";
 import { computed } from "vue";
 import DescriptionItem from "@/components/DescriptionItem.vue";
 import DescriptionList from "@/components/DescriptionList.vue";
+import ScenarioIdEditForm from "@/components/ScenarioIdEditForm.vue";
+import { useToggle } from "@vueuse/core";
+import type { ScenarioIdType } from "@orbat-mapper/msdllib/dist/lib/scenarioid";
 
 const { msdl } = useScenarioStore();
 const dialogStore = useDialogStore();
 
+const [showEditForm, toggleEditForm] = useToggle(false);
+
 const myElement = computed(() => {
   return { element: msdl.value?.scenarioId.element };
 });
+
+function onUpdate(data: Partial<ScenarioIdType>) {
+  toggleEditForm();
+  console.log("Updating ScenarioId with data:", data);
+}
 </script>
 <template>
   <div v-if="msdl">
-    <div class="flex items-center justify-between">
-      <h4 class="text-sm font-bold mt-2">Scenario info</h4>
-      <Badge v-if="msdl.isNETN">NETN</Badge>
+    <div class="flex items-center justify-between mt-1">
+      <h4 class="text-sm font-bold">Scenario info</h4>
+      <div class="flex items-center gap-1">
+        <Badge v-if="msdl.isNETN">NETN</Badge
+        ><Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          @click="toggleEditForm()"
+          :disabled="showEditForm"
+          ><PencilIcon
+        /></Button>
+      </div>
     </div>
-    <DescriptionList class="divide-y divide-border">
+    <ScenarioIdEditForm
+      v-if="showEditForm"
+      :item="msdl.scenarioId"
+      @cancel="toggleEditForm"
+      @update="onUpdate"
+    />
+    <DescriptionList v-else class="divide-y divide-border">
       <DescriptionItem label="Name">{{ msdl.scenarioId.name || "n/a" }}</DescriptionItem>
       <DescriptionItem label="Description">{{ msdl.scenarioId.description }}</DescriptionItem>
       <DescriptionItem label="Security classification">
@@ -33,13 +59,18 @@ const myElement = computed(() => {
       </DescriptionItem>
       <DescriptionItem label="Type">{{ msdl.scenarioId.type || "n/a" }}</DescriptionItem>
       <DescriptionItem label="Version">{{ msdl.scenarioId.version || "n/a" }}</DescriptionItem>
+      <DescriptionItem label="Associations"
+        ><Button variant="outline" class="mt-2" @click="dialogStore.toggleAssociationDialog()"
+          >Show</Button
+        ></DescriptionItem
+      >
+      <div class="flex items-center justify-end mt-4">
+        <Button variant="outline" type="button" size="sm" @click="toggleEditForm()"
+          >Modify ScenarioID</Button
+        >
+      </div>
     </DescriptionList>
 
-    <div class="flex items-center mt-2">
-      <Button variant="outline" class="" @click="dialogStore.toggleAssociationDialog()"
-        >Show associations</Button
-      >
-    </div>
     <div class="mt-4">
       <h4 class="text-sm font-bold">Debugging</h4>
       <div class="flex gap-2 mt-2">
