@@ -35,7 +35,7 @@ const form = useForm({
   initialValues: {
     name: props.item.name || "",
     description: props.item.description || "",
-    modificationDate: props.item.modificationDate || new Date().toISOString(),
+    modificationDate: props.item.modificationDate || new Date().toISOString().split("T")[0],
     securityClassification: props.item.securityClassification || "",
   },
 });
@@ -52,7 +52,7 @@ const onSubmit = form.handleSubmit((values) => {
         <FormItem>
           <FormLabel>Name</FormLabel>
           <FormControl>
-            <Input type="text" placeholder="shadcn" v-bind="componentField" />
+            <Input type="text" placeholder="" v-bind="componentField" />
           </FormControl>
           <FormMessage />
         </FormItem>
@@ -65,23 +65,8 @@ const onSubmit = form.handleSubmit((values) => {
         <FormItem>
           <FormLabel>Description</FormLabel>
           <FormControl>
-            <Input type="text" placeholder="shadcn" v-bind="componentField" />
+            <Input type="text" placeholder="" v-bind="componentField" />
           </FormControl>
-          <FormMessage />
-        </FormItem>
-      </FormField>
-
-      <FormField
-        v-slot="{ componentField }"
-        name="modificationDate"
-        :validate-on-blur="!form.isFieldDirty"
-      >
-        <FormItem>
-          <FormLabel>Modification date</FormLabel>
-          <FormControl>
-            <Input type="text" placeholder="YYYY-MM-DD" v-bind="componentField" />
-          </FormControl>
-          <FormDescription></FormDescription>
           <FormMessage />
         </FormItem>
       </FormField>
@@ -95,6 +80,20 @@ const onSubmit = form.handleSubmit((values) => {
           <FormControl>
             <Input type="text" placeholder="e.g. UNCLASSIFIED" v-bind="componentField" />
           </FormControl>
+          <FormMessage />
+        </FormItem>
+      </FormField>
+      <FormField
+        v-slot="{ componentField }"
+        name="modificationDate"
+        :validate-on-blur="!form.isFieldDirty"
+      >
+        <FormItem>
+          <FormLabel>Modification date</FormLabel>
+          <FormControl>
+            <Input type="text" placeholder="YYYY-MM-DD" v-bind="componentField" />
+          </FormControl>
+          <FormDescription></FormDescription>
           <FormMessage />
         </FormItem>
       </FormField>

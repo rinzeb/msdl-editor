@@ -95,3 +95,19 @@ export function formatDecimalDegrees(p?: Position, precision = 4) {
     precision,
   )}° ${lon >= 0 ? "E" : "W"}`;
 }
+
+export function xmlToString(element: Element): string {
+  const serializer = new XMLSerializer();
+  return serializer.serializeToString(element);
+  // Note: The XMLSerializer will in some cases output XML namespaces for every element.
+  // It is possible to remove these namespaces with the regex below, but it may not always
+  // work if you try to parse the element again and try to add it to an existing XML DOM.
+  // return xmlString.replace(/ xmlns="[^"]*"/g, "").replace(/ xmlns:[a-z0-9_-]+="[^"]*"/gi, "");
+}
+
+export function parseFromString(xmlString: string): Element {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(xmlString, "text/xml");
+
+  return doc.documentElement;
+}

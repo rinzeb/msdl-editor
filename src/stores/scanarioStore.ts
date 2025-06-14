@@ -1,19 +1,121 @@
-import { computed, shallowRef } from "vue";
-import { MilitaryScenario } from "@orbat-mapper/msdllib";
+import { computed, shallowRef, triggerRef } from "vue";
+import { MilitaryScenario, ScenarioId } from "@orbat-mapper/msdllib";
 import { useLayerStore } from "@/stores/layerStore.ts";
 import { useSelectStore } from "@/stores/selectStore.ts";
+import type { ScenarioIdType } from "@orbat-mapper/msdllib/dist/lib/scenarioid";
+import { parseFromString, xmlToString } from "@/utils.ts";
+
+export interface MetaEntry<T = string> {
+  label: T;
+  value: string | number;
+}
+
+interface Patch {
+  op: "replace" | "remove" | "add";
+  path: (string | number)[];
+  value?: unknown;
+}
+
+interface UndoEntry<T = string> {
+  patches: Patch[];
+  inversePatches: Patch[];
+  meta?: MetaEntry<T>;
+}
 
 const msdl = shallowRef<MilitaryScenario>();
 
-const undoStack = shallowRef<unknown[]>([]);
-const redoStack = shallowRef<unknown[]>([]);
+const undoStack = shallowRef<UndoEntry[]>([]);
+const redoStack = shallowRef<UndoEntry[]>([]);
+
+const canUndo = computed(() => undoStack.value.length > 0);
+const canRedo = computed(() => redoStack.value.length > 0);
+
+function applyPatchWrapper(patches: Patch[]) {
+  if (!msdl.value) return;
+  const data = msdl.value;
+  for (const patch of patches) {
+    const { op, path, value } = patch;
+    const target = data.scenarioId?.element;
+    if (!target) continue;
+
+    switch (op) {
+      case "replace":
+        if (value !== undefined) {
+          const newElement = parseFromString(value as string);
+          target.replaceWith(newElement);
+          data.scenarioId = new ScenarioId(newElement);
+          triggerRef(msdl);
+        }
+        break;
+      default:
+        console.warn(`Unknown operation: ${op}`);
+    }
+  }
+}
+
+function undo() {
+  const past = undoStack.value;
+  const future = redoStack.value;
+  if (past.length === 0) {
+    return;
+  }
+  const { patches, inversePatches, meta } = past.pop()!;
+  applyPatchWrapper(inversePatches);
+  future.unshift({ patches, inversePatches, meta });
+}
+
+function redo() {
+  const future = redoStack.value;
+  const past = undoStack.value;
+  if (future.length === 0) {
+    return;
+  }
+
+  const { patches, inversePatches, meta } = future.shift()!;
+  applyPatchWrapper(patches);
+  past.push({ patches, inversePatches, meta });
+}
+
+function update(action: "update", element: string, value: Partial<ScenarioIdType>) {
+  if (!msdl.value) return;
+  if (action === "update") {
+    if (element === "scenarioId") {
+      const preSnapshot = xmlToString(msdl.value.scenarioId.element);
+      const v = msdl.value.scenarioId;
+      Object.entries(value).forEach(([key, value]) => {
+        if (key in v) {
+          (v as any)[key] = value;
+        } else {
+          console.warn(`Property ${key} does not exist on Holding class.`);
+        }
+      });
+      // msdl.value.scenarioId.name = value.name!;
+      const postSnapshot = xmlToString(msdl.value.scenarioId.element);
+      const inversePatches: Patch[] = [
+        {
+          op: "replace",
+          path: ["scenarioId"],
+          value: preSnapshot,
+        },
+      ];
+      const patches: Patch[] = [
+        {
+          op: "replace",
+          path: ["scenarioId"],
+          value: postSnapshot,
+        },
+      ];
+      undoStack.value.push({ patches, inversePatches });
+      redoStack.value.splice(0);
+      triggerRef(msdl);
+      // console.log(undoStack.value);
+    }
+  }
+}
 
 export function useScenarioStore() {
   const layerStore = useLayerStore();
   const selectStore = useSelectStore();
-
-  const canUndo = computed(() => undoStack.value.length > 0);
-  const canRedo = computed(() => redoStack.value.length > 0);
 
   function loadScenario(scenario: MilitaryScenario) {
     selectStore.clearActiveItem();
@@ -31,13 +133,19 @@ export function useScenarioStore() {
     redoStack.value = [];
   }
 
-  function undo() {
-    console.warn("Undo is not implemented yet.");
-  }
+  const isNETN = computed(() => {
+    return msdl.value?.isNETN ?? false;
+  });
 
-  function redo() {
-    console.warn("Redo is not implemented yet.");
-  }
-
-  return { loadScenario, clearScenario, msdl, undo, redo, canUndo, canRedo };
+  return {
+    loadScenario,
+    clearScenario,
+    msdl,
+    undo,
+    redo,
+    canUndo,
+    canRedo,
+    modifyScenario: update,
+    isNETN,
+  };
 }

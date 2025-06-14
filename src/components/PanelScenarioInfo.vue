@@ -12,7 +12,7 @@ import ScenarioIdEditForm from "@/components/ScenarioIdEditForm.vue";
 import { useToggle } from "@vueuse/core";
 import type { ScenarioIdType } from "@orbat-mapper/msdllib/dist/lib/scenarioid";
 
-const { msdl } = useScenarioStore();
+const { msdl, modifyScenario } = useScenarioStore();
 const dialogStore = useDialogStore();
 
 const [showEditForm, toggleEditForm] = useToggle(false);
@@ -23,7 +23,8 @@ const myElement = computed(() => {
 
 function onUpdate(data: Partial<ScenarioIdType>) {
   toggleEditForm();
-  console.log("Updating ScenarioId with data:", data);
+  modifyScenario("update", "scenarioId", data);
+  // console.log("Updating ScenarioId with data:", data);
 }
 </script>
 <template>
