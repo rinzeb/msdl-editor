@@ -108,6 +108,43 @@ function updateScenarioId(value: Partial<ScenarioIdType>) {
   // console.log(undoStack.value);
 }
 
+function updateForceSide(objectHandle: string, value: Partial<ScenarioIdType>) {
+  if (!msdl.value) return;
+  const forceSide = msdl.value.getForceSideById(objectHandle);
+  if (!forceSide) {
+    console.warn(`Force side with object handle ${objectHandle} not found.`);
+    return;
+  }
+  const preSnapshot = xmlToString(forceSide.element);
+  Object.entries(value).forEach(([key, value]) => {
+    if (key in forceSide) {
+      (forceSide as any)[key] = value;
+    } else {
+      console.warn(`Property ${key} does not exist on ForceSide class.`);
+    }
+  });
+  const postSnapshot = xmlToString(forceSide.element);
+  console.warn("Undo/Redo functionality for forceSide is not implemented yet.");
+
+  // const inversePatches: Patch[] = [
+  //   {
+  //     op: "replace",
+  //     path: ["forceSide"],
+  //     value: preSnapshot,
+  //   },
+  // ];
+  // const patches: Patch[] = [
+  //   {
+  //     op: "replace",
+  //     path: ["scenarioId"],
+  //     value: postSnapshot,
+  //   },
+  // ];
+  // undoStack.value.push({ patches, inversePatches });
+  // redoStack.value.splice(0);
+  triggerRef(msdl);
+}
+
 export function useScenarioStore() {
   const layerStore = useLayerStore();
   const selectStore = useSelectStore();
@@ -140,7 +177,7 @@ export function useScenarioStore() {
     redo,
     canUndo,
     canRedo,
-    modifyScenario: { updateScenarioId },
+    modifyScenario: { updateScenarioId, updateForceSide },
     isNETN,
   };
 }
