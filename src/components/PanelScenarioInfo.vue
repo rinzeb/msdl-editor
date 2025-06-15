@@ -32,7 +32,7 @@ function onUpdate(data: Partial<ScenarioIdType>) {
     <div class="flex items-center justify-between mt-1">
       <h4 class="text-sm font-bold">Scenario info</h4>
       <div class="flex items-center gap-1">
-        <Badge v-if="msdl.isNETN">NETN</Badge
+        <Badge v-if="msdl.isNETN" variant="secondary">NETN</Badge
         ><Button
           type="button"
           variant="ghost"
