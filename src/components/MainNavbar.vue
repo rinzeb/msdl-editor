@@ -8,7 +8,11 @@ import { useScenarioStore } from "@/stores/scanarioStore.ts";
 import EditableLabel from "@/components/EditableLabel.vue";
 import { computed } from "vue";
 
-const { msdl, loadScenario, modifyScenario } = useScenarioStore();
+const {
+  msdl,
+  loadScenario,
+  modifyScenario: { updateScenarioId },
+} = useScenarioStore();
 
 const isDark = useDark();
 const toggleDark = useToggle(isDark);
@@ -26,7 +30,7 @@ const scenarioName = computed({
   get: () => msdl.value?.scenarioId.name || "No title",
   set: (value) => {
     if (msdl.value) {
-      modifyScenario("update", "scenarioId", { name: value });
+      updateScenarioId({ name: value });
     }
   },
 });

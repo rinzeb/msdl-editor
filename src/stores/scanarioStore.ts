@@ -76,41 +76,36 @@ function redo() {
   past.push({ patches, inversePatches, meta });
 }
 
-function update(action: "update", element: string, value: Partial<ScenarioIdType>) {
+function updateScenarioId(value: Partial<ScenarioIdType>) {
   if (!msdl.value) return;
-  if (action === "update") {
-    if (element === "scenarioId") {
-      const preSnapshot = xmlToString(msdl.value.scenarioId.element);
-      const v = msdl.value.scenarioId;
-      Object.entries(value).forEach(([key, value]) => {
-        if (key in v) {
-          (v as any)[key] = value;
-        } else {
-          console.warn(`Property ${key} does not exist on Holding class.`);
-        }
-      });
-      // msdl.value.scenarioId.name = value.name!;
-      const postSnapshot = xmlToString(msdl.value.scenarioId.element);
-      const inversePatches: Patch[] = [
-        {
-          op: "replace",
-          path: ["scenarioId"],
-          value: preSnapshot,
-        },
-      ];
-      const patches: Patch[] = [
-        {
-          op: "replace",
-          path: ["scenarioId"],
-          value: postSnapshot,
-        },
-      ];
-      undoStack.value.push({ patches, inversePatches });
-      redoStack.value.splice(0);
-      triggerRef(msdl);
-      // console.log(undoStack.value);
+  const preSnapshot = xmlToString(msdl.value.scenarioId.element);
+  const v = msdl.value.scenarioId;
+  Object.entries(value).forEach(([key, value]) => {
+    if (key in v) {
+      (v as any)[key] = value;
+    } else {
+      console.warn(`Property ${key} does not exist on Holding class.`);
     }
-  }
+  });
+  const postSnapshot = xmlToString(msdl.value.scenarioId.element);
+  const inversePatches: Patch[] = [
+    {
+      op: "replace",
+      path: ["scenarioId"],
+      value: preSnapshot,
+    },
+  ];
+  const patches: Patch[] = [
+    {
+      op: "replace",
+      path: ["scenarioId"],
+      value: postSnapshot,
+    },
+  ];
+  undoStack.value.push({ patches, inversePatches });
+  redoStack.value.splice(0);
+  triggerRef(msdl);
+  // console.log(undoStack.value);
 }
 
 export function useScenarioStore() {
@@ -145,7 +140,7 @@ export function useScenarioStore() {
     redo,
     canUndo,
     canRedo,
-    modifyScenario: update,
+    modifyScenario: { updateScenarioId },
     isNETN,
   };
 }
