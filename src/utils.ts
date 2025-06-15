@@ -1,6 +1,6 @@
 import type { InjectionKey } from "vue";
 import { inject } from "vue";
-import type { ForceSide } from "@orbat-mapper/msdllib";
+import { EquipmentItem, ForceSide, Unit } from "@orbat-mapper/msdllib";
 import type { Position } from "geojson";
 
 export function sortBy<T extends object, K extends keyof T>(arr: T[], key: K, ascending = true) {
@@ -110,4 +110,22 @@ export function parseFromString(xmlString: string): Element {
   const doc = parser.parseFromString(xmlString, "text/xml");
 
   return doc.documentElement;
+}
+
+export function isUnit(item: Unit | EquipmentItem | ForceSide): item is Unit {
+  return item instanceof Unit;
+}
+
+export function isEquipmentItem(item: Unit | EquipmentItem | ForceSide): item is EquipmentItem {
+  return item instanceof EquipmentItem;
+}
+
+export function isForceSide(item: Unit | EquipmentItem | ForceSide): item is ForceSide {
+  return item instanceof ForceSide;
+}
+
+export function isUnitOrEquipment(
+  item: Unit | EquipmentItem | ForceSide,
+): item is Unit | EquipmentItem {
+  return isUnit(item) || isEquipmentItem(item);
 }
