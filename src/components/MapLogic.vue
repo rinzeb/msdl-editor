@@ -39,10 +39,6 @@ watchEffect(() => {
   const source = props.mlMap.getSource("sides") as GeoJSONSource;
   if (!source) return;
   source.setData(featureCollection as never);
-  // try {
-  //   const center = centroid(featureCollection as never);
-  //   props.mlMap.flyTo({ center: center.geometry.coordinates as [number, number], zoom: 3 });
-  // } catch {}
 });
 
 watchEffect(() => {
@@ -116,10 +112,6 @@ function addSidesToMap(map: MlMap) {
     type: "geojson",
     data: featureCollection as never,
   });
-  try {
-    const center = centroid(featureCollection as never);
-    map.flyTo({ center: center.geometry.coordinates as [number, number], zoom: 3 });
-  } catch {}
 
   map.on("styleimagemissing", function (e) {
     const symb = new ms.Symbol(e.id, {
@@ -207,6 +199,13 @@ function addSidesToMap(map: MlMap) {
   });
 
   setTextField();
+
+  setTimeout(() => {
+    try {
+      const center = centroid(featureCollection as never);
+      map.flyTo({ center: center.geometry.coordinates as [number, number], zoom: 3 });
+    } catch {}
+  }, 600);
 }
 
 addSidesToMap(props.mlMap);

@@ -3,7 +3,7 @@ import { ArrowUpIcon, FocusIcon } from "lucide-vue-next";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabsmod";
 import { Button } from "@/components/ui/button";
-import { EquipmentItem, Unit } from "@orbat-mapper/msdllib";
+import { EquipmentItem, ForceSide, Unit } from "@orbat-mapper/msdllib";
 import CloseButton from "@/components/CloseButton.vue";
 import { useSelectStore } from "@/stores/selectStore.ts";
 import MilSymbol from "@/components/MilSymbol.vue";
@@ -15,9 +15,11 @@ import DetailsPanelHoldings from "@/components/DetailsPanelHoldings.vue";
 import ShowXMLDialog from "@/components/ShowXMLDialog.vue";
 import UnitModelPanel from "@/components/UnitModelPanel.vue";
 import EquipmentItemModelPanel from "@/components/EquipmentItemModelPanel.vue";
+import { isEquipmentItem, isForceSide, isUnit, isUnitOrEquipment } from "@/utils.ts";
+import DetailsPanelForceSide from "@/components/DetailsPanelForceSide.vue";
 
 const props = defineProps<{
-  item: Unit | EquipmentItem;
+  item: Unit | EquipmentItem | ForceSide;
 }>();
 
 const emit = defineEmits(["flyTo"]);
@@ -27,39 +29,45 @@ const { msdl, isNETN } = useScenarioStore();
 const selectStore = useSelectStore();
 
 const typeLabel = computed(() => {
-  if (props.item instanceof Unit) {
+  if (isUnit(props.item)) {
     return "Unit";
   }
-  if (props.item instanceof EquipmentItem) {
+  if (isEquipmentItem(props.item)) {
     return "Equipment";
+  }
+
+  if (isForceSide(props.item)) {
+    if (props.item.isSide) {
+      return "Side";
+    }
+    return "Force";
   }
   return "Item";
 });
 
-function isUnit(item: Unit | EquipmentItem): item is Unit {
-  return item instanceof Unit;
-}
-
-function isEquipmentItem(item: Unit | EquipmentItem): item is EquipmentItem {
-  return item instanceof EquipmentItem;
-}
-
 function goUp() {
-  const parentItem =
-    msdl.value?.getUnitById(props.item.superiorHandle) ??
-    msdl.value?.getEquipmentById(props.item.superiorHandle);
-  if (!parentItem) return;
-  selectStore.activeItem = parentItem;
+  if (isUnitOrEquipment(props.item)) {
+    const parentItem =
+      msdl.value?.getUnitOrForceSideById(props.item.superiorHandle) ??
+      msdl.value?.getEquipmentById(props.item.superiorHandle);
+    if (!parentItem) return;
+    selectStore.activeItem = parentItem;
+  } else if (isForceSide(props.item)) {
+    const parentItem = msdl.value?.getForceSideById(props.item.allegianceHandle);
+    if (!parentItem) return;
+    selectStore.activeItem = parentItem;
+  }
 }
 </script>
 
 <template>
   <Card class="text-sm bg-sidebar/90 gap-0 backdrop-blur-lg relative min-w-[200px]">
     <header class="px-4 h-10 mt-4 flex justify-between">
-      <div class="flex gap-2">
+      <div v-if="isUnitOrEquipment(item)" class="flex gap-2">
         <MilSymbol :sidc="item.sidc" :key="item.sidc" :size="16" />
         <span class="text-base font-bold">{{ item.label }}</span>
       </div>
+      <span v-else class="text-base font-bold">{{ item.name }}</span>
       <div>
         <Badge>{{ typeLabel }}</Badge>
       </div>
@@ -75,13 +83,13 @@ function goUp() {
     </div>
     <Tabs default-value="info" class="mt-0">
       <TabsList class="w-full flex">
-        <TabsTrigger value="info">Info</TabsTrigger>
+        <TabsTrigger value="info">Details</TabsTrigger>
         <TabsTrigger v-if="isUnit(item)" value="equipment"
           >Equipment
           <Badge class="px-1 py-0 text-xs rounded-full">{{ item.equipment.length }}</Badge>
         </TabsTrigger>
-        <TabsTrigger value="model">Model</TabsTrigger>
-        <TabsTrigger v-if="isNETN" value="holdings"
+        <TabsTrigger v-if="isUnitOrEquipment(item)" value="model">Model</TabsTrigger>
+        <TabsTrigger v-if="isNETN && isUnitOrEquipment(item)" value="holdings"
           >Holdings
           <Badge class="ml-0 px-1 py-0 text-xs rounded-full">{{
             item.holdings.length
@@ -91,7 +99,12 @@ function goUp() {
       <ScrollArea class="">
         <div class="max-h-[50vh] min-w-96">
           <TabsContent value="info" class="p-4">
-            <Button :disabled="!item.location" @click="emit('flyTo', item)" variant="outline"
+            <DetailsPanelForceSide :item="item" v-if="isForceSide(item)" />
+            <Button
+              v-else-if="isUnitOrEquipment(item)"
+              :disabled="!item.location"
+              @click="emit('flyTo', item)"
+              variant="outline"
               >Fly to</Button
             >
           </TabsContent>
@@ -107,7 +120,7 @@ function goUp() {
               </li>
             </ul>
           </TabsContent>
-          <TabsContent v-if="isNETN" value="holdings" class="p-4">
+          <TabsContent v-if="isNETN && isUnitOrEquipment(item)" value="holdings" class="p-4">
             <DetailsPanelHoldings :item="item" />
           </TabsContent>
           <TabsContent v-if="isUnit(item)" value="model">
