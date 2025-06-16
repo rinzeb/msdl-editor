@@ -8,6 +8,15 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { MilitaryServiceItems } from "@orbat-mapper/msdllib";
 import { toTypedSchema } from "@vee-validate/zod";
 import * as z from "zod";
 import { useForm } from "vee-validate";
@@ -62,9 +71,20 @@ const onSubmit = form.handleSubmit((values) => {
       >
         <FormItem>
           <FormLabel>Military service</FormLabel>
-          <FormControl>
-            <Input type="text" placeholder="e.g. ARMY" v-bind="componentField" />
-          </FormControl>
+          <Select v-bind="componentField">
+            <FormControl>
+              <SelectTrigger class="w-full">
+                <SelectValue placeholder="Select a military service" />
+              </SelectTrigger>
+            </FormControl>
+            <SelectContent>
+              <SelectGroup>
+                <SelectItem v-for="{ value, label } in MilitaryServiceItems" :key="value" :value>{{
+                  label
+                }}</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
           <FormMessage />
         </FormItem>
       </FormField>

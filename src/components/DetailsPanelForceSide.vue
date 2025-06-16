@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ForceSide } from "@orbat-mapper/msdllib";
+import { type ForceSide, MilitaryServiceItems } from "@orbat-mapper/msdllib";
 import DescriptionList from "@/components/DescriptionList.vue";
 import DescriptionItem from "@/components/DescriptionItem.vue";
 import { useToggle } from "@vueuse/core";
@@ -7,6 +7,7 @@ import { PencilIcon } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
 import ForceSideEditForm from "@/components/ForceSideEditForm.vue";
 import { useScenarioStore } from "@/stores/scanarioStore.ts";
+import { computed } from "vue";
 
 const {
   modifyScenario: { updateForceSide },
@@ -22,6 +23,10 @@ function onUpdate(data: Partial<ForceSide>) {
   toggleEditForm();
   updateForceSide(props.item.objectHandle, data);
   console.log("Updated ForceSide:", data);
+}
+
+function getServiceLabel(service: string): string {
+  return MilitaryServiceItems.find((item) => item.value === service)?.label ?? service;
 }
 </script>
 
@@ -43,7 +48,7 @@ function onUpdate(data: Partial<ForceSide>) {
   <DescriptionList v-else class="divide-y divide-border">
     <DescriptionItem label="Name">{{ item.name }}</DescriptionItem>
     <DescriptionItem v-if="item.militaryService" label="Military service">{{
-      item.militaryService
+      getServiceLabel(item.militaryService)
     }}</DescriptionItem>
     <DescriptionItem v-if="item.countryCode" label="Country code">
       {{ item.countryCode }}
