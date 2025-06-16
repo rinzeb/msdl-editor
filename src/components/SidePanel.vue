@@ -5,7 +5,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { ChevronDown, MousePointerClick as SelectIcon } from "lucide-vue-next";
+import { ChevronDown, TableOfContentsIcon as SelectIcon } from "lucide-vue-next";
 import { Switch } from "@/components/ui/switch";
 import { useLayerStore } from "@/stores/layerStore.ts";
 import ForceSideMenu from "@/components/ForceSideMenu.vue";
@@ -71,7 +71,8 @@ const toggleSide = (id: string) => {
             <Button
               class="opacity-0 group-hover:opacity-100"
               type="button"
-              variant="outline"
+              variant="ghost"
+              title="Show details"
               size="icon"
               @click.stop="selectStore.activeItem = side"
               ><SelectIcon
