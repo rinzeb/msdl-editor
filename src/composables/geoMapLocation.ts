@@ -8,6 +8,7 @@ import {
 } from "@vueuse/core";
 import { ref } from "vue";
 import type { Position } from "geojson";
+import { useUIStore } from "@/stores/uiStore.ts";
 
 export interface UseGetMapLocationOptions {
   cancelOnClickOutside?: boolean;
@@ -23,6 +24,7 @@ export function useGetMapLocation(map: MapLibreMap, options: UseGetMapLocationOp
   } = options;
 
   const isActive = ref(false);
+  const uiStore = useUIStore();
 
   const prevCursor = map.getCanvas().style.cursor;
   let stopEscListener: Fn;
@@ -37,7 +39,10 @@ export function useGetMapLocation(map: MapLibreMap, options: UseGetMapLocationOp
     isActive.value = true;
     onStartHook.trigger(null);
 
-    if (changeCursor) map.getCanvas().style.cursor = "crosshair";
+    if (changeCursor) {
+      uiStore.hoverEnabled = false;
+      map.getCanvas().style.cursor = "crosshair";
+    }
     if (cancelOnClickOutside) {
       stopClickOutside = onClickOutside(map.getContainer(), (e) => {
         if (stopPropagationOnClickOutside) e.stopPropagation();
@@ -59,6 +64,7 @@ export function useGetMapLocation(map: MapLibreMap, options: UseGetMapLocationOp
   function cleanUp() {
     const el = map?.getCanvas();
     if (el && changeCursor) {
+      uiStore.hoverEnabled = true;
       el.style.cursor = prevCursor;
     }
     isActive.value = false;

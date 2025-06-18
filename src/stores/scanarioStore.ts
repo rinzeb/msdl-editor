@@ -4,6 +4,7 @@ import { useLayerStore } from "@/stores/layerStore.ts";
 import { useSelectStore } from "@/stores/selectStore.ts";
 import type { ScenarioIdType } from "@orbat-mapper/msdllib/dist/lib/scenarioid";
 import { parseFromString, xmlToString } from "@/utils.ts";
+import type { Position } from "geojson";
 
 export interface MetaEntry<T = string> {
   label: T;
@@ -145,6 +146,24 @@ function updateForceSide(objectHandle: string, value: Partial<ScenarioIdType>) {
   triggerRef(msdl);
 }
 
+function updateItemLocation(objectHandle: string, newLocation: Position) {
+  if (!msdl.value) return;
+  const item = msdl.value.getUnitById(objectHandle) ?? msdl.value.getEquipmentById(objectHandle);
+  if (!item) {
+    console.warn(`Unit/EquipmentItem with object handle ${objectHandle} not found.`);
+    return;
+  }
+  //console.log(item);
+
+  if (item.disposition?.location) {
+    //@ts-expect-error
+    item.disposition.location = newLocation;
+  }
+
+  triggerRef(msdl);
+  // console.warn("Not implemented yet: updateItemLocation", newLocation);
+}
+
 export function useScenarioStore() {
   const layerStore = useLayerStore();
   const selectStore = useSelectStore();
@@ -177,7 +196,7 @@ export function useScenarioStore() {
     redo,
     canUndo,
     canRedo,
-    modifyScenario: { updateScenarioId, updateForceSide },
+    modifyScenario: { updateScenarioId, updateForceSide, updateItemLocation },
     isNETN,
   };
 }

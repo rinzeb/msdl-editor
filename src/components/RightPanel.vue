@@ -30,9 +30,10 @@ function flyToItem(item: EquipmentItem | Unit | ForceSide) {
 </script>
 <template>
   <DetailsPanel
-    v-if="selectStore.activeItem"
+    v-if="selectStore.activeItem && mlMap"
     :item="selectStore.activeItem"
     class="pointer-events-auto absolute right-2 top-[150px]"
     @flyTo="flyToItem"
+    :mlMap
   />
 </template>

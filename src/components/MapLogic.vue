@@ -9,6 +9,7 @@ import { useSelectStore } from "@/stores/selectStore.ts";
 import { useScenarioStore } from "@/stores/scanarioStore.ts";
 import MapContextMenu from "@/components/MapContextMenu.vue";
 import type { MapContextMenuEvent } from "@/components/types.ts";
+import { useUIStore } from "@/stores/uiStore.ts";
 
 const props = defineProps<{ mlMap: MlMap }>();
 const emit = defineEmits(["showContextMenu"]);
@@ -20,6 +21,7 @@ const mapEvent = ref<MapContextMenuEvent>();
 const store = useLayerStore();
 const mapSettings = useMapSettingsStore();
 const selectStore = useSelectStore();
+const uiStore = useUIStore();
 
 const sides = computed(() => {
   return sortBy(msdl.value?.sides ?? [], "name").filter((side) => side.rootUnits.length > 0);
@@ -161,11 +163,13 @@ function addSidesToMap(map: MlMap) {
 
   // Change the cursor to a pointer when the mouse is over the places layer.
   map.on("mouseenter", "sides", () => {
+    if (!uiStore.hoverEnabled) return;
     map.getCanvas().style.cursor = "pointer";
   });
 
   // Change it back to a pointer when it leaves.
   map.on("mouseleave", "sides", () => {
+    if (!uiStore.hoverEnabled) return;
     map.getCanvas().style.cursor = "";
   });
 

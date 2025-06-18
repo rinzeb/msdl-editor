@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ArrowUpIcon, FocusIcon } from "lucide-vue-next";
+import { ArrowUpIcon, FocusIcon, LocateFixedIcon } from "lucide-vue-next";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabsmod";
 import { Button } from "@/components/ui/button";
@@ -17,16 +17,33 @@ import UnitModelPanel from "@/components/UnitModelPanel.vue";
 import EquipmentItemModelPanel from "@/components/EquipmentItemModelPanel.vue";
 import { isEquipmentItem, isForceSide, isUnit, isUnitOrEquipment } from "@/utils.ts";
 import DetailsPanelForceSide from "@/components/DetailsPanelForceSide.vue";
+import { useGetMapLocation } from "@/composables/geoMapLocation.ts";
 
 const props = defineProps<{
   item: Unit | EquipmentItem | ForceSide;
+  mlMap: maplibregl.Map;
 }>();
 
 const emit = defineEmits(["flyTo"]);
 
-const { msdl, isNETN } = useScenarioStore();
+const {
+  msdl,
+  isNETN,
+  modifyScenario: { updateItemLocation },
+} = useScenarioStore();
 
 const selectStore = useSelectStore();
+
+const {
+  start: startGetLocation,
+  isActive: isGetLocationActive,
+  onGetLocation,
+  cancel: cancelGetLocation,
+} = useGetMapLocation(props.mlMap);
+
+onGetLocation((location) => {
+  updateItemLocation(props.item.objectHandle, location);
+});
 
 const typeLabel = computed(() => {
   if (isUnit(props.item)) {
@@ -61,7 +78,7 @@ function goUp() {
 </script>
 
 <template>
-  <Card class="text-sm bg-sidebar/90 gap-0 backdrop-blur-lg relative min-w-[200px]">
+  <Card class="text-sm bg-sidebar gap-0 backdrop-blur-lg relative min-w-[200px]">
     <header class="px-4 h-10 mt-4 flex justify-between">
       <div v-if="isUnitOrEquipment(item)" class="flex gap-2">
         <MilSymbol :sidc="item.sidc" :key="item.sidc" :size="16" />
@@ -80,6 +97,15 @@ function goUp() {
         ><ArrowUpIcon
       /></Button>
       <ShowXMLDialog :item="item">XML</ShowXMLDialog>
+      <Button
+        v-if="isUnitOrEquipment(item)"
+        variant="ghost"
+        size="icon"
+        @click="startGetLocation()"
+        :disabled="isGetLocationActive"
+        title="Get location of item"
+        ><LocateFixedIcon
+      /></Button>
     </div>
     <Tabs default-value="info" class="mt-0">
       <TabsList class="w-full flex">
@@ -141,5 +167,14 @@ function goUp() {
       </ScrollArea>
     </Tabs>
     <CloseButton class="absolute right-4 top-2" @click="selectStore.clearActiveItem()" />
+    <div
+      v-if="isGetLocationActive"
+      class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center rounded"
+    >
+      <div class="p-4 bg-background">
+        <span>Click on map to set location</span>
+        <Button variant="link" type="button" @click="cancelGetLocation()">Cancel</Button>
+      </div>
+    </div>
   </Card>
 </template>
