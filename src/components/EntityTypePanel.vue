@@ -4,15 +4,15 @@ import { useEntityTypeStore } from "@/stores/entityTypeStore";
 import { computed } from "vue";
 import { SisoEnum } from "@siso-entity-type/lib";
 import { storeToRefs } from "pinia";
+import { Button } from "@/components/ui/button";
+import { Pencil } from "lucide-vue-next";
 
 const { sisoEnums } = storeToRefs(useEntityTypeStore());
 
-const props = defineProps<{
-  entityType: string;
-}>();
+const entityType = defineModel<string>();
 
 const sisoEntityType = computed(() =>
-  props.entityType ? SisoEnum.fromString(props.entityType) : null,
+  entityType.value ? SisoEnum.fromString(entityType.value) : null,
 );
 
 const entityTypeFields = computed(() => {
@@ -40,10 +40,23 @@ const uniqueEntityTypeFields = computed(() => {
     [] as { label: string; value: string }[],
   );
 });
+
+const testUpdateEntityType = (newType: string = "1.1.110.81.112.2.0") => {
+  updateEntityType(newType);
+};
+
+const updateEntityType = (newType: string) => {
+  entityType.value = newType;
+};
 </script>
 <template>
   <div v-if="sisoEntityType">
-    <h4 class="text-sm font-bold mt-2">Entity type: {{ props.entityType || "Unknown" }}</h4>
+    <h4 class="text-sm font-bold mt-2 flex items-center">
+      <span>Entity type: {{ entityType || "Unknown" }}</span>
+      <Button @click="testUpdateEntityType(undefined)" variant="ghost" size="icon">
+        <Pencil class="size-4" />
+      </Button>
+    </h4>
     <PanelDataGrid class="mt-4" v-if="sisoEntityType">
       <template v-for="(field, index) in uniqueEntityTypeFields" :key="index">
         <span class="font-semibold">{{ field.label }}</span>
