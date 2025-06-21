@@ -12,7 +12,7 @@ import { useToggle } from "@vueuse/core";
 import { Button } from "@/components/ui/button";
 import { PencilIcon } from "lucide-vue-next";
 import HoldingsEditDialog from "@/components/HoldingsEditDialog.vue";
-import { useScenarioStore } from "@/stores/scanarioStore";
+import { useScenarioStore } from "@/stores/scenarioStore.ts";
 
 const {
   modifyScenario: { updateHoldings },

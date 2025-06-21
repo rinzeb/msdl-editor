@@ -8,7 +8,7 @@ import CloseButton from "@/components/CloseButton.vue";
 import { Button } from "@/components/ui/button";
 import PanelMapDisplay from "@/components/PanelMapDisplay.vue";
 import PanelScenarioInfo from "@/components/PanelScenarioInfo.vue";
-import { useScenarioStore } from "@/stores/scanarioStore.ts";
+import { useScenarioStore } from "@/stores/scenarioStore.ts";
 import PanelScenarioDeployment from "@/components/PanelScenarioDeployment.vue";
 
 const uiStore = useUIStore();

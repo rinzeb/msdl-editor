@@ -15,7 +15,7 @@ import {
 import { EllipsisVertical as DotsVerticalIcon } from "lucide-vue-next";
 import { computed, triggerRef } from "vue";
 import { type ForceSide, StandardIdentity } from "@orbat-mapper/msdllib";
-import { useScenarioStore } from "@/stores/scanarioStore.ts";
+import { useScenarioStore } from "@/stores/scenarioStore.ts";
 import { useSelectStore } from "@/stores/selectStore.ts";
 
 const props = defineProps<{

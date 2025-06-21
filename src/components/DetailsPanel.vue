@@ -10,7 +10,7 @@ import MilSymbol from "@/components/MilSymbol.vue";
 import { computed } from "vue";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
-import { useScenarioStore } from "@/stores/scanarioStore.ts";
+import { useScenarioStore } from "@/stores/scenarioStore.ts";
 import DetailsPanelHoldings from "@/components/DetailsPanelHoldings.vue";
 import ShowXMLDialog from "@/components/ShowXMLDialog.vue";
 import UnitModelPanel from "@/components/UnitModelPanel.vue";
