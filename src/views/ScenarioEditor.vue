@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import MaplibreMap from "@/components/MaplibreMap.vue";
 import MainNavbar from "@/components/MainNavbar.vue";
+import CreateNewScenarioDialog from "@/components/CreateNewScenarioDialog.vue";
 import LoadFromUrlDialog from "@/components/LoadFromUrlDialog.vue";
 import { useDialogStore } from "@/stores/dialogStore.ts";
 import { ref, shallowRef, useTemplateRef } from "vue";
@@ -18,7 +19,7 @@ import { inputEventFilter } from "@/utils.ts";
 import CommandPalette from "@/components/CommandPalette.vue";
 import EditAssociationsDialog from "@/components/EditAssociationsDialog.vue";
 
-const { loadScenario, msdl, undo, redo } = useScenarioStore();
+const { createScenario, loadScenario, msdl, undo, redo } = useScenarioStore();
 
 const mlMap = shallowRef<maplibregl.Map>();
 const showSearch = ref(false);
@@ -46,7 +47,7 @@ async function loadExampleScenario() {
   progress.done();
 }
 
-loadExampleScenario();
+// loadExampleScenario();
 
 const { isOverDropZone } = useFileDropZone(dropZoneRef, onDrop);
 
@@ -78,6 +79,10 @@ async function onDrop(files: File[] | null) {
       </div>
     </main>
 
+    <CreateNewScenarioDialog
+      v-model:open="dialogStore.isCreateMSDLDialogOpen"
+      @created="createScenario"
+    />
     <LoadFromUrlDialog v-model:open="dialogStore.isUrlDialogOpen" @loaded="loadScenario" />
     <EditAssociationsDialog v-model:open="dialogStore.isAssociationDialogOpen" />
     <DropZoneIndicator v-if="isOverDropZone" />
