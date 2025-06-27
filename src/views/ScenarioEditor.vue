@@ -32,22 +32,24 @@ function onMapReady(map: maplibregl.Map) {
   mlMap.value = map;
 }
 
-async function loadExampleScenario() {
-  progress.start();
-  const url = "/examples/MSDL-example.xml";
-  // const url = "/examples/SampleMSDL.xml";
-  // const url = "/examples/example3.xml";
-  try {
-    const response = await fetch(url);
-    const msdlAsText = await response.text();
-    loadScenario(MilitaryScenario.createFromString(msdlAsText));
-  } catch (error) {
-    console.error("Error fetching data:", error);
-  }
-  progress.done();
-}
+if (import.meta.env.DEV) {
+  const loadExampleScenario = async () => {
+    progress.start();
+    const url = "/examples/MSDL-example.xml";
+    // const url = "/examples/SampleMSDL.xml";
+    // const url = "/examples/example3.xml";
+    try {
+      const response = await fetch(url);
+      const msdlAsText = await response.text();
+      loadScenario(MilitaryScenario.createFromString(msdlAsText));
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+    progress.done();
+  };
 
-// loadExampleScenario();
+  loadExampleScenario();
+}
 
 const { isOverDropZone } = useFileDropZone(dropZoneRef, onDrop);
 
