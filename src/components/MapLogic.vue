@@ -24,7 +24,9 @@ const selectStore = useSelectStore();
 const uiStore = useUIStore();
 
 const sides = computed(() => {
-  return sortBy(msdl.value?.sides ?? [], "name").filter((side) => side.rootUnits.length > 0);
+  return sortBy(msdl.value?.sides ?? [], "name").filter(
+    (side) => side.rootUnits.length > 0 || side.equipment.length > 0,
+  );
 });
 
 // store event subscription

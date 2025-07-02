@@ -72,7 +72,7 @@ function goUp() {
     if (!parentItem) return;
     selectStore.activeItem = parentItem;
   } else if (isForceSide(props.item)) {
-    const parentItem = msdl.value?.getForceSideById(props.item.allegianceHandle);
+    const parentItem = msdl.value?.getForceSideById(props.item.allegianceHandle || "");
     if (!parentItem) return;
     selectStore.activeItem = parentItem;
   }
