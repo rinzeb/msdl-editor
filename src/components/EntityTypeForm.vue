@@ -1,14 +1,24 @@
 <script setup lang="ts">
 // Vue components
-import { Check, ChevronsUpDown, Search } from 'lucide-vue-next'
-import { computed} from 'vue'
+import { Check, ChevronsUpDown, Search } from "lucide-vue-next";
+import { computed } from "vue";
 import { cn } from "@/lib/utils";
-import { Button } from '@/components/ui/button'
-import { Combobox, ComboboxAnchor, ComboboxEmpty, ComboboxGroup, ComboboxInput, ComboboxItem, ComboboxItemIndicator, ComboboxList, ComboboxTrigger } from '@/components/ui/combobox'
+import { Button } from "@/components/ui/button";
+import {
+  Combobox,
+  ComboboxAnchor,
+  ComboboxEmpty,
+  ComboboxGroup,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxItemIndicator,
+  ComboboxList,
+  ComboboxTrigger,
+} from "@/components/ui/combobox";
 
 import { useEntityTypeStore } from "@/stores/entityTypeStore";
 import { storeToRefs } from "pinia";
-import { ScrollArea } from '@/components/ui/scroll-area'
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 // Type a single enumeration
 type enumeration = {
@@ -18,16 +28,16 @@ type enumeration = {
 
 // Get props from parent
 const props = defineProps<{
-  label: string,                    // Field label
-  updateMethod: () => void,         // Method of updating the store
+  label: string; // Field label
+  updateMethod: () => void; // Method of updating the store
 }>();
 
 // Setup store refs
-const store = useEntityTypeStore(); 
+const store = useEntityTypeStore();
 const refs = storeToRefs(store);
 
 // Keys for the items map
-type ItemMapKey = keyof typeof itemsMap
+type ItemMapKey = keyof typeof itemsMap;
 
 // All items map
 const itemsMap = {
@@ -41,24 +51,31 @@ const itemsMap = {
 };
 
 // Get local variables from parent
-const localVariable = defineModel<number | null>()
+const localVariable = defineModel<number | null>();
 
 // Display-value for the search field in the dropdowns, finding the title for the given enumeration value
 const selectedKindLabel = computed(() => {
-  return itemsMap[props.label as ItemMapKey].value.find((item : enumeration) => item.value === localVariable.value)?.title || '';
+  return (
+    itemsMap[props.label as ItemMapKey].value.find(
+      (item: enumeration) => item.value === localVariable.value,
+    )?.title || ""
+  );
 });
-
 </script>
 
 <template>
-  <Combobox 
-    v-model="localVariable" 
-    @update:modelValue="updateMethod"
-  >
+  <Combobox v-model="localVariable" @update:modelValue="updateMethod">
     <ComboboxAnchor as-child>
       <ComboboxTrigger as-child>
-        <Button variant="ghost" class="justify-between font-light size-full whitespace-normal text-left">
-          {{ itemsMap[props.label as ItemMapKey].value.find((item : enumeration) => item.value === localVariable)?.title ?? `Unknown ${label.toLowerCase()} ${localVariable}` }}
+        <Button
+          variant="ghost"
+          class="justify-between font-light size-full whitespace-normal text-left"
+        >
+          {{
+            itemsMap[props.label as ItemMapKey].value.find(
+              (item: enumeration) => item.value === localVariable,
+            )?.title ?? `Unknown ${label.toLowerCase()} ${localVariable}`
+          }}
           <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </ComboboxTrigger>
@@ -66,9 +83,9 @@ const selectedKindLabel = computed(() => {
 
     <ComboboxList class="font-light w-100">
       <div class="relative w-full max-w-sm items-center">
-        <ComboboxInput 
+        <ComboboxInput
           :display-value="() => selectedKindLabel"
-          class="focus-visible:ring-0 border-0 rounded-none h-10" 
+          class="focus-visible:ring-0 border-0 rounded-none h-10"
         />
         <span class="absolute start-0 inset-y-0 flex items-center justify-center px-3">
           <Search class="size-4 text-muted-foreground" />
@@ -76,9 +93,7 @@ const selectedKindLabel = computed(() => {
       </div>
 
       <ScrollArea class="h-72">
-        <ComboboxEmpty>
-          No data available
-        </ComboboxEmpty>
+        <ComboboxEmpty> No data available </ComboboxEmpty>
 
         <ComboboxGroup>
           <ComboboxItem

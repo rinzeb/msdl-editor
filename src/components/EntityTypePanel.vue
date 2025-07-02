@@ -3,11 +3,11 @@ import PanelDataGrid from "@/components/PanelDataGrid.vue";
 import { useEntityTypeStore } from "@/stores/entityTypeStore";
 import { computed, watch, ref, type Ref } from "vue";
 import { SisoEnum } from "@siso-entity-type/lib";
-import { storeToRefs} from "pinia";
+import { storeToRefs } from "pinia";
 import EntityTypeForm from "@/components/EntityTypeForm.vue";
 import EntityTypeSearch from "@/components/EntityTypeSearch.vue";
 
-import { Button } from '@/components/ui/button'
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -17,17 +17,19 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Pencil } from "lucide-vue-next";
-import { Separator } from '@/components/ui/separator'
+import { Separator } from "@/components/ui/separator";
 
 // Define store and obtain entityType from parent
 const { sisoEnums } = storeToRefs(useEntityTypeStore());
 const entityType = defineModel<string>();
-const localEntityType = computed(() => { return entityType.value || "" })
-const store = useEntityTypeStore(); 
+const localEntityType = computed(() => {
+  return entityType.value || "";
+});
+const store = useEntityTypeStore();
 const {
   selectedEntityType,
   selectedCountry,
@@ -78,13 +80,44 @@ const localVariables: LocalVariables = {
 };
 
 // Update local variables if store changes
-watch(selectedCountry, (newVal: number | null) => {localVariables.Country.value = localVariables.Country.value !== newVal ? newVal : localVariables.Country.value});
-watch(selectedKind, (newVal: number | null) => {localVariables.Kind.value = localVariables.Kind.value !== newVal ? newVal : localVariables.Kind.value});
-watch(selectedDomain, (newVal: number | null) => (localVariables.Domain.value = localVariables.Domain.value !== newVal ? newVal : localVariables.Domain.value));
-watch(selectedCategory, (newVal: number | null) => (localVariables.Category.value = localVariables.Category.value !== newVal ? newVal : localVariables.Category.value));
-watch(selectedSubcategory, (newVal: number | null) => (localVariables.Subcategory.value = localVariables.Subcategory.value !== newVal ? newVal : localVariables.Subcategory.value),);
-watch(selectedSpecific, (newVal: number | null) => (localVariables.Specific.value = localVariables.Specific.value !== newVal ? newVal : localVariables.Specific.value));
-watch(selectedExtra, (newVal: number | null) => (localVariables.Extra.value = localVariables.Extra.value !== newVal ? newVal : localVariables.Extra.value));
+watch(selectedCountry, (newVal: number | null) => {
+  localVariables.Country.value =
+    localVariables.Country.value !== newVal ? newVal : localVariables.Country.value;
+});
+watch(selectedKind, (newVal: number | null) => {
+  localVariables.Kind.value =
+    localVariables.Kind.value !== newVal ? newVal : localVariables.Kind.value;
+});
+watch(
+  selectedDomain,
+  (newVal: number | null) =>
+    (localVariables.Domain.value =
+      localVariables.Domain.value !== newVal ? newVal : localVariables.Domain.value),
+);
+watch(
+  selectedCategory,
+  (newVal: number | null) =>
+    (localVariables.Category.value =
+      localVariables.Category.value !== newVal ? newVal : localVariables.Category.value),
+);
+watch(
+  selectedSubcategory,
+  (newVal: number | null) =>
+    (localVariables.Subcategory.value =
+      localVariables.Subcategory.value !== newVal ? newVal : localVariables.Subcategory.value),
+);
+watch(
+  selectedSpecific,
+  (newVal: number | null) =>
+    (localVariables.Specific.value =
+      localVariables.Specific.value !== newVal ? newVal : localVariables.Specific.value),
+);
+watch(
+  selectedExtra,
+  (newVal: number | null) =>
+    (localVariables.Extra.value =
+      localVariables.Extra.value !== newVal ? newVal : localVariables.Extra.value),
+);
 
 // Update methods for the store
 const updateMap = {
@@ -116,7 +149,7 @@ const updateMap = {
   },
   Extra: async () => {
     store.selectExtra(localVariables.Extra.value);
-  }
+  },
 };
 
 // Select entities in the store, in order to populate the dropdown lists
@@ -156,40 +189,37 @@ const uniqueEntityTypeFields = computed(() => {
     },
     [] as { label: string; value: string }[],
   );
-}); 
+});
 
 // Update entitype value upon 'save'
 const updateEntityType = (newType: string) => {
-
   // Update Equipment, UI is updated through a re-render
   entityType.value = newType;
 };
 
 // Set dialog UI upon opening
 const openDialog = async () => {
-  typeQuery.value = localEntityType.value
+  typeQuery.value = localEntityType.value;
   store.resetCategories();
-  setLocalVariables(localEntityType.value)       // The local variables reset to null after saving the new entityType number
+  setLocalVariables(localEntityType.value); // The local variables reset to null after saving the new entityType number
   await populateBuilder(localEntityType.value);
 };
 
 const setLocalVariables = (entType: string) => {
   const parts = entType.split(".").map((s) => +s);
   if (parts.length < 7) return console.warn(`Could not populate entitytype: ${entType}`);
-  localVariables.Country.value = parts[2]!
-  localVariables.Kind.value = parts[0]!
-  localVariables.Domain.value = parts[1]!
-  localVariables.Category.value = parts[3]!
-  localVariables.Subcategory.value = parts[4]!
-  localVariables.Specific.value = parts[5]!
-  localVariables.Extra.value = parts[6]!
+  localVariables.Country.value = parts[2]!;
+  localVariables.Kind.value = parts[0]!;
+  localVariables.Domain.value = parts[1]!;
+  localVariables.Category.value = parts[3]!;
+  localVariables.Subcategory.value = parts[4]!;
+  localVariables.Specific.value = parts[5]!;
+  localVariables.Extra.value = parts[6]!;
 };
-
 </script>
 
 <template>
   <div v-if="sisoEntityType">
-    
     <h4 class="text-sm font-bold mt-2 flex items-center">
       <span>Entity type: {{ entityType || "Unknown" }}</span>
 
@@ -207,10 +237,10 @@ const setLocalVariables = (entType: string) => {
               Make changes to the entity type. Click save when done.
             </DialogDescription>
           </DialogHeader>
-          
+
           <div className="flex w-full max-w-sm items-center gap-2">
             <Label for="entityTypeNumber" class="text-nowrap">Entity type :</Label>
-            <Input type="text" v-model="typeQuery"/>
+            <Input type="text" v-model="typeQuery" />
             <Button type="submit" @click="enterType">Set</Button>
           </div>
 
@@ -219,19 +249,17 @@ const setLocalVariables = (entType: string) => {
             <div className="px-2 text-center bg-background text-sm">OR</div>
             <Separator />
           </div>
-          
-          <PanelDataGrid class="" v-if="true">
 
+          <PanelDataGrid class="" v-if="true">
             <template v-for="(field, index) in uniqueEntityTypeFields" :key="index">
               <span class="p-2">{{ field.label }}</span>
-              
-              <EntityTypeForm 
-                v-model= "localVariables[field.label as LocalVariableKeys].value"
-                :label = "field.label"
-                :update-method= "updateMap[field.label as LocalVariableKeys]"
+
+              <EntityTypeForm
+                v-model="localVariables[field.label as LocalVariableKeys].value"
+                :label="field.label"
+                :update-method="updateMap[field.label as LocalVariableKeys]"
               ></EntityTypeForm>
             </template>
-
           </PanelDataGrid>
           <PanelDataGrid class="mt-4" v-else>
             <span class="font-semibold">No entitytype provided</span>
@@ -239,10 +267,10 @@ const setLocalVariables = (entType: string) => {
 
           <Label for="entityTypeNumber" class="text-nowrap">Search by description</Label>
           <EntityTypeSearch :populate-builder="populateBuilder"></EntityTypeSearch>
-          <Separator/>
+          <Separator />
 
           <DialogFooter>
-            <Input type="text" v-model="selectedEntityType" disabled/>
+            <Input type="text" v-model="selectedEntityType" disabled />
             <DialogClose as-child>
               <Button type="submit" @click="updateEntityType(selectedEntityType)">
                 Save changes
@@ -251,7 +279,6 @@ const setLocalVariables = (entType: string) => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
     </h4>
 
     <PanelDataGrid class="mt-4" v-if="sisoEntityType">

@@ -9,11 +9,11 @@ const props = defineProps<{
 
 // Re-render component when the equipmentModel is updated
 const componentKey = ref(0);
-const triggerRerender = () => { 
+const triggerRerender = () => {
   componentKey.value += 1;
-  emit('rerenderXML');
-}
-const emit = defineEmits(['rerenderXML']);
+  emit("rerenderXML");
+};
+const emit = defineEmits(["rerenderXML"]);
 
 const equipmentModel = computed(() => props.equipment?.model ?? null);
 </script>
@@ -24,7 +24,7 @@ const equipmentModel = computed(() => props.equipment?.model ?? null);
       v-if="equipmentModel?.entityType"
       v-model="equipmentModel.entityType"
       @update:modelValue="triggerRerender"
-      :key="componentKey" 
+      :key="componentKey"
     >
     </EntityTypePanel>
     <span v-else>No entitytype provided</span>

@@ -170,7 +170,8 @@ const rerenderXMLpreview = () => {
           <TabsContent v-if="isEquipmentItem(item)" value="model">
             <div class="max-w-[40vw]">
               <div class="bg-muted p-2 overflow-auto">
-                <EquipmentItemModelPanel :equipment="item" @rerenderXMLpreview="rerenderXMLpreview"> </EquipmentItemModelPanel>
+                <EquipmentItemModelPanel :equipment="item" @rerenderXMLpreview="rerenderXMLpreview">
+                </EquipmentItemModelPanel>
               </div>
             </div>
           </TabsContent>
