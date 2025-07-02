@@ -16,7 +16,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { CrosshairIcon } from "lucide-vue-next";
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { formatDecimalDegrees } from "@/utils.ts";
 import type { Position } from "geojson";
 import type { MapContextMenuEvent } from "@/components/types.ts";
@@ -24,11 +24,21 @@ import MilSymbol from "@/components/MilSymbol.vue";
 import { useSelectStore } from "@/stores/selectStore.ts";
 import { useScenarioStore } from "@/stores/scenarioStore.ts";
 import { Badge } from "@/components/ui/badge";
+import type { LngLatElevationTuple, LngLatTuple } from "@orbat-mapper/msdllib";
+import YesNoDialog from "@/components/YesNoDialog.vue";
+import type { TacticalJson } from "@orbat-mapper/msdllib/dist/lib/common";
+
+const showConfirmDeleteDialog = ref(false);
+const eventItems = ref([] as TacticalJson[]);
+const eventUnits = ref([] as TacticalJson[]);
 
 const props = defineProps<{ event?: MapContextMenuEvent }>();
 const isOpen = defineModel({ default: false });
 const selectStore = useSelectStore();
-const { msdl } = useScenarioStore();
+const {
+  msdl,
+  modifyScenario: { addUnit, addEquipmentItem, removeUnit, removeEquipmentItem },
+} = useScenarioStore();
 
 const clickPosition = computed(() => {
   if (!props.event) return [0, 0];
@@ -74,6 +84,32 @@ function onUnitSelect(activeItemId?: string) {
   selectStore.activeItem =
     (msdl.value?.getUnitById(activeItemId) || msdl.value?.getEquipmentById(activeItemId)) ?? null;
 }
+
+function createEquipment(pos: number[]) {
+  if (!pos || pos.length < 2 || pos.length > 3) return;
+  addEquipmentItem(pos as LngLatTuple | LngLatElevationTuple);
+}
+
+function createUnit(pos: number[]) {
+  if (!pos || pos.length < 2 || pos.length > 3) return;
+  addUnit(pos as LngLatTuple | LngLatElevationTuple);
+}
+
+function deleteItems(event: MapContextMenuEvent) {
+  eventItems.value = event.equipment ?? [];
+  eventUnits.value = event.units ?? [];
+  showConfirmDeleteDialog.value = true;
+}
+
+function confirmDelete() {
+  eventItems.value.forEach((eq) => removeEquipmentItem(eq.id!));
+  eventUnits.value.forEach((u) => removeUnit(u.id!));
+}
+
+function cancelDelete() {
+  eventItems.value = [];
+  eventUnits.value = [];
+}
 </script>
 
 <template>
@@ -90,6 +126,19 @@ function onUnitSelect(activeItemId?: string) {
       :sideOffset="0"
     >
       <DropdownMenuLabel v-if="event">{{ formatDecimalDegrees(clickPosition) }}</DropdownMenuLabel>
+      <DropdownMenuSeparator />
+
+      <DropdownMenuSub v-if="!event?.units?.length && !event?.equipment?.length">
+        <DropdownMenuSubTrigger><span>Create new</span></DropdownMenuSubTrigger>
+        <DropdownMenuSubContent>
+          <DropdownMenuItem as-child
+            ><a @click="createUnit(clickPosition)">Unit</a></DropdownMenuItem
+          >
+          <DropdownMenuItem as-child
+            ><a @click="createEquipment(clickPosition)">Equipment item</a></DropdownMenuItem
+          >
+        </DropdownMenuSubContent>
+      </DropdownMenuSub>
       <DropdownMenuSeparator />
 
       <DropdownMenuSub>
@@ -137,6 +186,34 @@ function onUnitSelect(activeItemId?: string) {
           </DropdownMenuItem>
         </DropdownMenuSubContent>
       </DropdownMenuSub>
+      <DropdownMenuItem
+        v-if="event?.units?.length || event?.equipment?.length"
+        @select="deleteItems(event)"
+        >Delete
+      </DropdownMenuItem>
+      <DropdownMenuSeparator v-if="event?.units?.length || event?.equipment?.length" />
     </DropdownMenuContent>
   </DropdownMenu>
+  <YesNoDialog
+    v-model:open="showConfirmDeleteDialog"
+    title="Confirm deleting items"
+    @yes="confirmDelete"
+    @no="cancelDelete"
+  >
+    <template #description>
+      <p class="mb-2">Are you sure you want to delete the following item(s)?</p>
+      <div v-if="eventUnits.length">
+        <p class="text-bold">Units:</p>
+        <ul class="list-disc pl-5 max-h-48 overflow-y-auto mb-2">
+          <li v-for="item in eventUnits" :key="item.id">{{ item.label }}</li>
+        </ul>
+      </div>
+      <div v-if="eventItems.length">
+        <p class="text-bold">Equipment items:</p>
+        <ul class="list-disc pl-5 max-h-48 overflow-y-auto mb-2">
+          <li v-for="item in eventItems" :key="item.id">{{ item.label }}</li>
+        </ul>
+      </div>
+    </template>
+  </YesNoDialog>
 </template>

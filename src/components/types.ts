@@ -1,3 +1,4 @@
+import type { TacticalJson } from "@orbat-mapper/msdllib/dist/lib/common";
 import type { Position } from "geojson";
 
 export type MapContextMenuEvent = {
@@ -5,14 +6,6 @@ export type MapContextMenuEvent = {
   y: number;
   position: Position;
   zoomLevel?: number;
-  units?: {
-    id?: string;
-    sidc?: string;
-    label?: string;
-  }[];
-  equipment?: {
-    id?: string;
-    sidc?: string;
-    label?: string;
-  }[];
+  units?: TacticalJson[];
+  equipment?: TacticalJson[];
 };
