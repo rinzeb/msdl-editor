@@ -143,10 +143,7 @@ const onSubmit = form.handleSubmit((values) => {
         </FormItem>
       </FormField>
 
-      <FormFooter
-        @cancel="emit('cancel')"
-        :submit-text="variant == 'new' ? 'Create' : 'Save'"
-      />
+      <FormFooter @cancel="emit('cancel')" :submit-text="variant == 'new' ? 'Create' : 'Save'" />
     </form>
   </div>
 </template>

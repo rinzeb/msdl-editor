@@ -6,6 +6,12 @@ import {
   type HoldingType,
   type ForceSide,
   type StandardIdentity,
+  Unit,
+  UnitDisposition,
+  type LngLatTuple,
+  type LngLatElevationTuple,
+  EquipmentItem,
+  EquipmentItemDisposition,
 } from "@orbat-mapper/msdllib";
 import { useLayerStore } from "@/stores/layerStore.ts";
 import { useSelectStore } from "@/stores/selectStore.ts";
@@ -14,6 +20,7 @@ import { parseFromString, xmlToString } from "@/utils.ts";
 import type { Position } from "geojson";
 import { useSideStore } from "@/stores/uiStore.ts";
 import type { MilitaryScenarioInputType } from "@orbat-mapper/msdllib/dist/lib/militaryscenario";
+import type { UnitEquipmentInterface } from "@orbat-mapper/msdllib/dist/lib/common";
 
 export interface MetaEntry<T = string> {
   label: T;
@@ -238,6 +245,46 @@ function setSideAffiliation(objectHandleOrSide: string | ForceSide, affiliation:
   triggerRef(msdl);
 }
 
+function addUnit(
+  newLocation: LngLatTuple | LngLatElevationTuple,
+  newUnit?: Partial<UnitEquipmentInterface>,
+) {
+  if (!msdl.value) return;
+  const item = Unit.create();
+  item.disposition = UnitDisposition.fromModel({
+    location: newLocation,
+  });
+  item.name = newUnit?.name ?? "New unit";
+  msdl.value.addUnit(item);
+  triggerRef(msdl);
+}
+
+function addEquipmentItem(
+  newLocation: LngLatTuple | LngLatElevationTuple,
+  newEquipment?: Partial<UnitEquipmentInterface>,
+) {
+  if (!msdl.value) return;
+  const item = EquipmentItem.create();
+  item.disposition = EquipmentItemDisposition.fromModel({
+    location: newLocation,
+  });
+  item.name = newEquipment?.name ?? "New equipment item";
+  msdl.value.addEquipmentItem(item);
+  triggerRef(msdl);
+}
+
+function removeUnit(unitHandle: string) {
+  if (!msdl.value) return;
+  msdl.value.removeUnit(unitHandle);
+  triggerRef(msdl);
+}
+
+function removeEquipmentItem(equipmentHandle: string) {
+  if (!msdl.value) return;
+  msdl.value.removeEquipmentItem(equipmentHandle);
+  triggerRef(msdl);
+}
+
 function createScenarioKey(scenario: MilitaryScenario): string {
   return scenario.scenarioId.name + scenario.scenarioId.description;
 }
@@ -299,6 +346,10 @@ export function useScenarioStore() {
       updateForceSide,
       updateItemLocation,
       updateHoldings,
+      addUnit,
+      addEquipmentItem,
+      removeUnit,
+      removeEquipmentItem,
       setPrimarySide: (side: ForceSide | string) => {
         setPrimarySide(side);
         const scenarioKey = createScenarioKey(msdl.value!);
