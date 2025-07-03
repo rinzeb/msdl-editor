@@ -170,7 +170,7 @@ function updateForceSide(objectHandle: string, value: Partial<ScenarioIdType>) {
 
 function updateItemLocation(objectHandle: string, newLocation: Position) {
   if (!msdl.value) return;
-  const item = msdl.value.getUnitById(objectHandle) ?? msdl.value.getEquipmentById(objectHandle);
+  const item = msdl.value.getUnitOrEquipmentById(objectHandle);
   if (!item) {
     console.warn(`Unit/EquipmentItem with object handle ${objectHandle} not found.`);
     return;
@@ -191,7 +191,7 @@ function updateItemModel(
   model: UnitModel | UnitModelType | EquipmentModel | EquipmentModelType,
 ) {
   if (!msdl.value) return;
-  const item = msdl.value.getUnitById(objectHandle) ?? msdl.value.getEquipmentById(objectHandle);
+  const item = msdl.value.getUnitOrEquipmentById(objectHandle);
   if (!item) {
     console.warn(`Unit/EquipmentItem with object handle ${objectHandle} not found.`);
     return;
@@ -202,7 +202,7 @@ function updateItemModel(
 
 function updateHoldings(objectHandle: string, newHoldings: HoldingType[]) {
   if (!msdl.value) return;
-  const item = msdl.value.getUnitById(objectHandle) ?? msdl.value.getEquipmentById(objectHandle);
+  const item = msdl.value.getUnitOrEquipmentById(objectHandle);
   if (!item) {
     console.warn(`Unit/EquipmentItem with object handle ${objectHandle} not found.`);
     return;

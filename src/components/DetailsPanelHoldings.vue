@@ -26,10 +26,7 @@ const props = defineProps<{
 }>();
 
 function holdings(): Holding[] {
-  const item =
-    msdl.value?.getUnitById(props.item?.objectHandle) ??
-    msdl.value?.getEquipmentById(props.item?.objectHandle) ??
-    null;
+  const item = msdl.value?.getUnitOrEquipmentById(props.item?.objectHandle) ?? null;
   return item?.holdings ?? [];
 }
 
