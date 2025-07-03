@@ -21,6 +21,12 @@ import type { Position } from "geojson";
 import { useSideStore } from "@/stores/uiStore.ts";
 import type { MilitaryScenarioInputType } from "@orbat-mapper/msdllib/dist/lib/militaryscenario";
 import type { UnitEquipmentInterface } from "@orbat-mapper/msdllib/dist/lib/common";
+import type {
+  EquipmentModel,
+  EquipmentModelType,
+  UnitModel,
+  UnitModelType,
+} from "@orbat-mapper/msdllib/dist/lib/modelType";
 
 export interface MetaEntry<T = string> {
   label: T;
@@ -178,6 +184,20 @@ function updateItemLocation(objectHandle: string, newLocation: Position) {
 
   triggerRef(msdl);
   // console.warn("Not implemented yet: updateItemLocation", newLocation);
+}
+
+function updateItemModel(
+  objectHandle: string,
+  model: UnitModel | UnitModelType | EquipmentModel | EquipmentModelType,
+) {
+  if (!msdl.value) return;
+  const item = msdl.value.getUnitById(objectHandle) ?? msdl.value.getEquipmentById(objectHandle);
+  if (!item) {
+    console.warn(`Unit/EquipmentItem with object handle ${objectHandle} not found.`);
+    return;
+  }
+  item.model = model;
+  triggerRef(msdl);
 }
 
 function updateHoldings(objectHandle: string, newHoldings: HoldingType[]) {
@@ -345,6 +365,7 @@ export function useScenarioStore() {
       updateScenarioId,
       updateForceSide,
       updateItemLocation,
+      updateItemModel,
       updateHoldings,
       addUnit,
       addEquipmentItem,
