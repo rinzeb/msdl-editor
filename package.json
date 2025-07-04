@@ -44,7 +44,7 @@
     "xast-util-to-xml": "^3.0.2",
     "xastscript": "^3.1.1",
     "xml-beautify": "^1.2.3",
-    "zod": "^3.25.71"
+    "zod": "^3.25.72"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.16",
@@ -69,6 +69,6 @@
     "vite": "^6.3.5",
     "vite-plugin-compression2": "^2.2.0",
     "vite-plugin-vue-devtools": "^7.7.7",
-    "vue-tsc": "^2.2.12"
+    "vue-tsc": "^3.0.1"
   }
 }
